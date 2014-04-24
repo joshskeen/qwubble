@@ -107,18 +107,24 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
+        for(int i = 0; i < 8; i++){
+            int randomX = 0 + (int)(Math.random()*CAMERA_WIDTH);
+            addFace(randomX, 0);
+        }
+
         return this.mScene;
     }
 
     @Override
     public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
-        if (this.mPhysicsWorld != null) {
-            if (pSceneTouchEvent.isActionDown()) {
-                this.addFace(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
-                return true;
-            }
-        }
-        return false;
+//        if (this.mPhysicsWorld != null) {
+//            if (pSceneTouchEvent.isActionDown()) {
+//                this.addFace(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+//                return true;
+//            }
+//        }
+//        return false;
+        return true;
     }
 
     @Override
@@ -154,6 +160,7 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
     private void addFace(final float pX, final float pY) {
         this.mFaceCount++;
         Debug.d("Faces: " + this.mFaceCount);
+        Debug.d("px: " + pX + ", py =" + pY);
 
         final AnimatedSprite face;
         final Body body;
@@ -164,13 +171,10 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
             @Override
             protected TextureRegion doInBackground(Void... params) {
                 try {
-
                     ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                         @Override
                         public InputStream open() throws IOException {
-
-                            URL url = new URL("http://img2.wikia.nocookie.net/__cb20130523224933/achille12345/images/5/51/Head.png");
-
+                            URL url = new URL("http://www.floridanest.com/_/rsrc/1394128557181/Sell-your-home-with-Marie-Louise-Verbeke/ROUND%20AVATAR%20-%20ML.png?height=100&width=100");
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();

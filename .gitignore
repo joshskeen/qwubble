@@ -5,4 +5,4 @@
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 ## Additional for IntelliJ
-out/
+/out
