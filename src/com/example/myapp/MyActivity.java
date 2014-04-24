@@ -48,6 +48,7 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
     private static final int CAMERA_HEIGHT = 720;
 
     private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+    private static final String TAG = "MyACtivity";
 
     private BitmapTextureAtlas mBitmapTextureAtlas;
 
@@ -107,8 +108,8 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
-        for(int i = 0; i < 8; i++){
-            int randomX = 0 + (int)(Math.random()*CAMERA_WIDTH);
+        for (int i = 0; i < 8; i++) {
+            int randomX = 0 + (int) (Math.random() * CAMERA_WIDTH);
             addFace(randomX, 0);
         }
 
@@ -117,13 +118,6 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
 
     @Override
     public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
-//        if (this.mPhysicsWorld != null) {
-//            if (pSceneTouchEvent.isActionDown()) {
-//                this.addFace(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
-//                return true;
-//            }
-//        }
-//        return false;
         return true;
     }
 
@@ -165,7 +159,7 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
         final AnimatedSprite face;
         final Body body;
 
-        new AsyncTask<Void, Void, TextureRegion>(){
+        new AsyncTask<Void, Void, TextureRegion>() {
             TextureRegion imageFromWebservice;
 
             @Override
@@ -200,13 +194,23 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
 
                 //create face from TextureRegion
 
-                Sprite entity = new Sprite(pX, pY, textureRegion, getVertexBufferObjectManager());
+                Sprite entity = new Sprite(pX, pY, textureRegion, getVertexBufferObjectManager()) {
+                    @Override
+                    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                        if (pSceneTouchEvent.isActionDown()) {
+                            Debug.d("TOUCHED");
+                            //Display a dialog, overthrow universe
+                            return true;
+                        } else {
+                            Debug.d("TOUCHED..sorta. " + pSceneTouchEvent);
+                            return false;
+                        }
+                    }
+                };
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
-
-//                face.animate(200);
-
                 mScene.attachChild(entity);
+                mScene.registerTouchArea(entity);
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
 
             }
