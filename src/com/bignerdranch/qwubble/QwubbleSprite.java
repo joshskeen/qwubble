@@ -9,6 +9,9 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
+import org.andengine.util.modifier.ease.EaseBounceIn;
+import org.andengine.util.modifier.ease.EaseBounceOut;
+import org.andengine.util.modifier.ease.IEaseFunction;
 
 /**
 * Created by bphillips on 4/24/14.
@@ -55,7 +58,7 @@ class QwubbleSprite extends Sprite {
         float start = getScaleX(), end;
 
         if (mZoomed) {
-            end = 2;
+            end = 4;
         } else {
             end = 1;
         }
@@ -64,7 +67,9 @@ class QwubbleSprite extends Sprite {
             unregisterEntityModifier(mScaleModifier);
         }
 
-        mScaleModifier = new ScaleModifier(1, start, end);
+        final IEaseFunction easeFunction = EaseBounceOut.getInstance();
+
+        mScaleModifier = new ScaleModifier(0.6f, start, end, null, easeFunction);
         mScaleModifier.setAutoUnregisterWhenFinished(true);
         getParent().sortChildren(new IEntityComparator() {
             @Override
