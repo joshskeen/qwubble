@@ -2,7 +2,7 @@ package com.example.myapp;
 
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.widget.Toast;
+import android.util.Log;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -61,8 +61,6 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
 
     @Override
     public EngineOptions onCreateEngineOptions() {
-        Toast.makeText(this, "Touch the screen to add objects.", Toast.LENGTH_LONG).show();
-
         final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
 
@@ -70,13 +68,7 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
 
     @Override
     public void onCreateResources() {
-
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
-//        this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
-//        this.mCircleFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, this, "headtest.png", 0, 64, 2, 1); // 64x32
-//
-//        this.mBitmapTextureAtlas.load();
     }
 
     @Override
@@ -117,18 +109,19 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
     }
 
     @Override
-    public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+    public boolean onSceneTouchEvent(final Scene scene, final TouchEvent sceneTouchEvent) {
+
         return true;
     }
 
     @Override
-    public void onAccelerationAccuracyChanged(final AccelerationData pAccelerationData) {
+    public void onAccelerationAccuracyChanged(final AccelerationData accelerationData) {
 
     }
 
     @Override
-    public void onAccelerationChanged(final AccelerationData pAccelerationData) {
-        final Vector2 gravity = Vector2Pool.obtain(pAccelerationData.getX(), pAccelerationData.getY());
+    public void onAccelerationChanged(final AccelerationData accelerationData) {
+        final Vector2 gravity = Vector2Pool.obtain(accelerationData.getX(), accelerationData.getY());
         this.mPhysicsWorld.setGravity(gravity);
         Vector2Pool.recycle(gravity);
     }
@@ -151,10 +144,10 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
     // Methods
     // ===========================================================
 
-    private void addFace(final float pX, final float pY) {
+    private void addFace(final float x, final float y) {
         this.mFaceCount++;
         Debug.d("Faces: " + this.mFaceCount);
-        Debug.d("px: " + pX + ", py =" + pY);
+        Debug.d("px: " + x + ", py =" + y);
 
         final AnimatedSprite face;
         final Body body;
@@ -190,19 +183,21 @@ public class MyActivity extends SimpleBaseGameActivity implements IAccelerationL
             protected void onPostExecute(TextureRegion textureRegion) {
 
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
-//                face = new AnimatedSprite(pX, pY, textureRegion, this.MyActivity.getVertexBufferObjectManager());
 
                 //create face from TextureRegion
 
-                Sprite entity = new Sprite(pX, pY, textureRegion, getVertexBufferObjectManager()) {
+                Sprite entity = new Sprite(x, y, textureRegion, getVertexBufferObjectManager()) {
                     @Override
-                    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                        if (pSceneTouchEvent.isActionDown()) {
+                    public boolean onAreaTouched(TouchEvent sceneTouchEvent, float touchAreaLocalX, float touchAreaLocalY) {
+                        if (sceneTouchEvent.isActionDown()) {
                             Debug.d("TOUCHED");
                             //Display a dialog, overthrow universe
+
+                            Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
+
                             return true;
                         } else {
-                            Debug.d("TOUCHED..sorta. " + pSceneTouchEvent);
+                            Debug.d("TOUCHED..sorta. " + sceneTouchEvent);
                             return false;
                         }
                     }
