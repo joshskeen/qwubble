@@ -42,6 +42,9 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -96,7 +99,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
     private void registerInBackground() {
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             public String msg = "";
 
             @Override
@@ -108,7 +111,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 try {
                     regid = gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + regid;
-//                    sendRegistrationIdToBackend();
+                    sendRegistrationIdToBackend(regid);
                     storeRegistrationId(context, regid);
                     Debug.d(TAG, "REGISTRATION ID: " + regid);
                 } catch (Exception e) {
@@ -120,10 +123,32 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         }.execute();
     }
 
-    private void sendRegistrationIdToBackend() {
-        Debug.d(TAG, "SEND REGISTRATION ID TO BACKEND!!!!!");
-    }
+    private void sendRegistrationIdToBackend(String regid) {
 
+
+        QwubbleWebservice.getService().postRegistration(regid, new Callback<Void>() {
+            @Override
+            public void success(Void aVoid, Response response) {
+                Log.d(TAG, "Posted my REGID, got response: " + response);
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Log.d(TAG, "FAIL!!!");
+            }
+        });
+
+//        QwubbleWebservice.getService().getPing(new Callback<Void>() {
+//            @Override
+//            public void success(Void aVoid, Response response) {
+//                Debug.d(TAG, "PING PONG YALL");
+//            }
+//            @Override
+//            public void failure(RetrofitError retrofitError) {
+//                Debug.d(TAG, "SOMETHING HORRIBLE HAPPENED");
+//            }
+//        });
+    }
 
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -150,13 +175,16 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         return true;
     }
 
+
     @Override
     public Scene onCreateScene() {
 
         mGCMBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "GCM MESSAGE RECEIVEDD!!!!!!");
+                String data = intent.getStringExtra("data");
+                Debug.d("alert => ", intent.getExtras().getString("alert"));
+                intent.getExtras().getString("time");
             }
         };
 
@@ -219,21 +247,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
 
-
     private static int getAppVersion(Context context) {
         return 1;
     }
 
     private void setupPlayServices() {
-        if(checkPlayServices()){
+        if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(context);
             Log.d(TAG, "REGID was " + regid);
+            sendRegistrationIdToBackend(regid);
             if (regid.isEmpty()) {
                 Log.d(TAG, "REGID was empty");
                 registerInBackground();
             }
-        }else{
+        } else {
             Log.d(TAG, "SETUP PLAY SERVICES FAILED!!!!!!");
         }
     }
@@ -262,10 +290,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         super.onResumeGame();
         this.enableAccelerationSensor(this);
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.google.android.c2dm.intent.RECEIVE");
 
+        filter.addAction("com.google.android.c2dm.intent.RECEIVE");
         filter.addCategory("com.bignerdranch.qwubble");
+
         registerReceiver(mGCMBroadcastReceiver, filter);
+        Log.d(TAG, "receiver registerd!!!!");
         checkPlayServices();
     }
 
