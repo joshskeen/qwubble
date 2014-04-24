@@ -3,10 +3,9 @@ package com.bignerdranch.qwubble;
 import android.content.*;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
+import android.preference.PreferenceManager;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -89,8 +88,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     @Override
     public EngineOptions onCreateEngineOptions() {
-        Toast.makeText(this, "Touch the screen to add objects.", Toast.LENGTH_LONG).show();
-
         final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
 
@@ -98,13 +95,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     @Override
     public void onCreateResources() {
-
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
-//        this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
-//        this.mCircleFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBitmapTextureAtlas, this, "headtest.png", 0, 64, 2, 1); // 64x32
-//
-//        this.mBitmapTextureAtlas.load();
     }
 
     private void registerInBackground() {
@@ -277,18 +268,19 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
 
     @Override
-    public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+    public boolean onSceneTouchEvent(final Scene scene, final TouchEvent sceneTouchEvent) {
+
         return true;
     }
 
     @Override
-    public void onAccelerationAccuracyChanged(final AccelerationData pAccelerationData) {
+    public void onAccelerationAccuracyChanged(final AccelerationData accelerationData) {
 
     }
 
     @Override
-    public void onAccelerationChanged(final AccelerationData pAccelerationData) {
-        final Vector2 gravity = Vector2Pool.obtain(pAccelerationData.getX(), pAccelerationData.getY());
+    public void onAccelerationChanged(final AccelerationData accelerationData) {
+        final Vector2 gravity = Vector2Pool.obtain(accelerationData.getX(), accelerationData.getY());
         this.mPhysicsWorld.setGravity(gravity);
         Vector2Pool.recycle(gravity);
     }
@@ -315,10 +307,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
 
-    private void addFace(final float pX, final float pY) {
+    private void addFace(final float x, final float y) {
         this.mFaceCount++;
         Debug.d("Faces: " + this.mFaceCount);
-        Debug.d("px: " + pX + ", py =" + pY);
+        Debug.d("px: " + x + ", py =" + y);
 
         final AnimatedSprite face;
         final Body body;
@@ -354,23 +346,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             protected void onPostExecute(TextureRegion textureRegion) {
 
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
-//                face = new AnimatedSprite(pX, pY, textureRegion, this.MainActivity.getVertexBufferObjectManager());
 
                 //create face from TextureRegion
 
-                Sprite entity = new Sprite(pX, pY, textureRegion, getVertexBufferObjectManager()) {
-                    @Override
-                    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                        if (pSceneTouchEvent.isActionDown()) {
-                            Debug.d("TOUCHED");
-                            //Display a dialog, overthrow universe
-                            return true;
-                        } else {
-                            Debug.d("TOUCHED..sorta. " + pSceneTouchEvent);
-                            return false;
-                        }
-                    }
-                };
+                Sprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
                 mScene.attachChild(entity);
