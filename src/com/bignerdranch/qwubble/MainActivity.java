@@ -183,8 +183,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.getVertexBufferObjectManager();
 
         QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld);
+        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity();
+        layerEntity.setZoomLayer(zoomLayerEntity);
 
         this.mScene.attachChild(layerEntity);
+        this.mScene.attachChild(zoomLayerEntity);
 
         return this.mScene;
     }

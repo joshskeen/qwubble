@@ -1,6 +1,7 @@
 package com.bignerdranch.qwubble;
 
 import android.util.Log;
+import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.IEntityComparator;
 import org.andengine.entity.modifier.ScaleModifier;
@@ -20,6 +21,7 @@ class QwubbleSprite extends Sprite {
     private static final String TAG = "QwubbleSprite";
 
     private boolean mZoomed = false;
+    private QwubbleZoomLayerEntity mZoomLayer;
 
     private long mClickTime = 0;
 
@@ -41,9 +43,11 @@ class QwubbleSprite extends Sprite {
 
             //Display a dialog, overthrow universe
 
+            mZoomLayer.zoomToSprite(this);
+
             Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
 
-            toggleZoom();
+
 
             return true;
         } else {
@@ -88,4 +92,11 @@ class QwubbleSprite extends Sprite {
         registerEntityModifier(mScaleModifier);
     }
 
+    public QwubbleZoomLayerEntity getZoomLayer() {
+        return mZoomLayer;
+    }
+
+    public void setZoomLayer(QwubbleZoomLayerEntity zoomLayer) {
+        mZoomLayer = zoomLayer;
+    }
 }

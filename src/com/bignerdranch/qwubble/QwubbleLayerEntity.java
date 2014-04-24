@@ -41,6 +41,7 @@ public class QwubbleLayerEntity extends Entity {
     private VertexBufferObjectManager mVertexBufferObjectManager;
     private TextureManager mTextureManager;
     private Scene mScene;
+    private QwubbleZoomLayerEntity mZoomLayer;
     private int mFaceCount;
 
 
@@ -123,7 +124,8 @@ public class QwubbleLayerEntity extends Entity {
 
                 //create face from TextureRegion
 
-                Sprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
+                QwubbleSprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
+                entity.setZoomLayer(mZoomLayer);
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
                 attachChild(entity);
@@ -142,5 +144,13 @@ public class QwubbleLayerEntity extends Entity {
 
     public TextureManager getTextureManager() {
         return mTextureManager;
+    }
+
+    public QwubbleZoomLayerEntity getZoomLayer() {
+        return mZoomLayer;
+    }
+
+    public void setZoomLayer(QwubbleZoomLayerEntity zoomLayer) {
+        mZoomLayer = zoomLayer;
     }
 }
