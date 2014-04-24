@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/libs/andengine/AndEngine/AndEngine.iml" filepath="$PROJECT_DIR$/libs/andengine/AndEngine/AndEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/AndEnginePhysicsBox2DExtension/AndEnginePhysicsBox2DExtension.iml" filepath="$PROJECT_DIR$/libs/AndEnginePhysicsBox2DExtension/AndEnginePhysicsBox2DExtension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/google-play-services_lib/google-play-services_lib.iml" filepath="$PROJECT_DIR$/libs/google-play-services_lib/google-play-services_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/qwubble.iml" filepath="$PROJECT_DIR$/qwubble.iml" />
     </modules>
   </component>
