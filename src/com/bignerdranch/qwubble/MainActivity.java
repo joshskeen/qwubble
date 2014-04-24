@@ -5,9 +5,7 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -321,22 +319,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
                 //create face from TextureRegion
 
-                Sprite entity = new Sprite(x, y, textureRegion, getVertexBufferObjectManager()) {
-                    @Override
-                    public boolean onAreaTouched(TouchEvent sceneTouchEvent, float touchAreaLocalX, float touchAreaLocalY) {
-                        if (sceneTouchEvent.isActionDown()) {
-                            Debug.d("TOUCHED");
-                            //Display a dialog, overthrow universe
-
-                            Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
-
-                            return true;
-                        } else {
-                            Debug.d("TOUCHED..sorta. " + sceneTouchEvent);
-                            return false;
-                        }
-                    }
-                };
+                Sprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
                 mScene.attachChild(entity);
