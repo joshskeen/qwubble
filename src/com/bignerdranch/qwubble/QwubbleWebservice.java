@@ -17,6 +17,7 @@ public class QwubbleWebservice implements QwubbleWebInterface {
     public static QwubbleWebInterface getService() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://qwubble-api.herokuapp.com/api")
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override
                     public void intercept(RequestFacade requestFacade) {
