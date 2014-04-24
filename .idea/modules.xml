@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/libs/andengine/AndEngine/AndEngine.iml" filepath="$PROJECT_DIR$/libs/andengine/AndEngine/AndEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/AndEnginePhysicsBox2DExtension/AndEnginePhysicsBox2DExtension.iml" filepath="$PROJECT_DIR$/libs/AndEnginePhysicsBox2DExtension/AndEnginePhysicsBox2DExtension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qwubble.iml" filepath="$PROJECT_DIR$/qwubble.iml" />
+    </modules>
+  </component>
+</project>
+
