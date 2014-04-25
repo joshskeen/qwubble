@@ -14,7 +14,7 @@ public class Util {
     }
 
     public static String getCloudinaryUrl(String url) {
-        return getCloudinaryUrl(url, 150);
+        return getCloudinaryUrl(url, MainActivity.QWUBBLE_WIDTH);
     }
 
 
