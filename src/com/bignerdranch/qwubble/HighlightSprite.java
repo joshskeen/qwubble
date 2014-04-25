@@ -12,11 +12,11 @@ public class HighlightSprite extends Sprite {
     private final Sprite mHighlightTarget;
 
     public HighlightSprite(Sprite highlightTarget, ITextureRegion textureRegion, VertexBufferObjectManager vertexBufferObjectManager) {
-        super(0, 0, textureRegion, vertexBufferObjectManager);
+        super(-1, -1, textureRegion, vertexBufferObjectManager);
         mHighlightTarget = highlightTarget;
 
-        setWidth(highlightTarget.getWidth());
-        setHeight(highlightTarget.getHeight());
+        setWidth(highlightTarget.getWidth() + 2);
+        setHeight(highlightTarget.getHeight() + 2);
 
         setRotationCenter(getHeight() / 2, getWidth() / 2);
     }
