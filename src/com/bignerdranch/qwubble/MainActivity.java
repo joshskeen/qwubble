@@ -211,6 +211,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData);
+                    mAnswerLayerEntity.addQuestion(response.mQuestionData);
                 }else if(type.equals("answer_creation_notification")){
 
                 } else {
@@ -288,6 +289,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mScene.registerTouchArea(mAskButton2);
 
         this.mScene.attachChild(mQwubbleLayerEntity);
+        this.mScene.attachChild(mAnswerLayerEntity);
         this.mScene.attachChild(zoomLayerEntity);
         return this.mScene;
     }
@@ -314,11 +316,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             mAnswerButton2.setColor(Color.GREEN);
             mAskButtonText2.setAlpha(0.3f);
             mAskButton2.setColor(Color.WHITE);
+            selectLayer(mAnswerLayerEntity);
         } else {
             mAnswerButtonText2.setAlpha(0.3f);
             mAnswerButton2.setColor(Color.WHITE);
             mAskButtonText2.setAlpha(1.0f);
             mAskButton2.setColor(Color.GREEN);
+            selectLayer(mQwubbleLayerEntity);
         }
     }
 

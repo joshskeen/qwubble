@@ -94,11 +94,7 @@ public class QwubbleDialogFragment extends DialogFragment {
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .setNegativeButton("Close",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.dismiss();
-                            }
-                        }
+                        null
                 );
 
         return b.create();
