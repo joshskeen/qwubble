@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center_horizontal"
+            >
+
+        <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/qwubbleImage"
+                />
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="4"
+            android:singleLine="false"
+            android:id="@+id/qwubbleQuestion"
+            android:text="If god had a name, what would it be? And would you call it to his face if you were faced with Him in all His glory?"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="Answers"
+            />
+
+    <ListView
+            android:id="@+id/qwubbleAnswers"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            />
+
+    <EditText
+            android:background="#1d1d1d"
+            android:hint="Answer this question..."
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            />
+
+    <Button
+            android:layout_width="match_parent"
+            android:text="Answer This Question"
+            android:textAlignment="center"
+            android:id="@+id/answerQuestionButton"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>
+

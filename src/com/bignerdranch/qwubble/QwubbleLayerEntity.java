@@ -8,7 +8,6 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
@@ -100,7 +99,7 @@ public class QwubbleLayerEntity extends Entity {
                     ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                         @Override
                         public InputStream open() throws IOException {
-                            URL url = new URL(getCloudinaryUrl("http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg"));
+                            URL url = new URL(Util.getCloudinaryUrl("http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg"));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
@@ -118,10 +117,6 @@ public class QwubbleLayerEntity extends Entity {
                 return imageFromWebservice;
             }
 
-            private String getCloudinaryUrl(String url) {
-                return "http://res.cloudinary.com/dcu4qkwdf/image/fetch/w_100,h_100,r_max,c_thumb,g_face,c_fill,t_png,/" + url;
-            }
-
             @Override
             protected void onPostExecute(TextureRegion textureRegion) {
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
@@ -136,10 +131,7 @@ public class QwubbleLayerEntity extends Entity {
 
             }
         }.execute();
-
     }
-
-
 
     public VertexBufferObjectManager getVertexBufferObjectManager() {
         return mVertexBufferObjectManager;

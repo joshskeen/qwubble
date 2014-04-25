@@ -37,9 +37,6 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
                     mCameraSize.getHeight() / 2,
             };
 
-//            center[0] -= sprite.getWidth();
-//            center[1] -= sprite.getHeight();
-
             Log.i(TAG, "Center coords: " + center[0] + ", " + center[1]);
 
             mZoomSprite = new ZoomSprite(center[0], center[1], 4, sprite);

@@ -9,9 +9,11 @@ import android.util.Log;
 import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.bignerdranch.qwubble.data.QwubbleDialogFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import de.greenrobot.event.EventBus;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -194,6 +196,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         setupPlayServices();
 
+        EventBus.getDefault().register(this);
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
         this.mScene = new Scene();
@@ -241,15 +244,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mScene.attachChild(mAnswerButton2);
         mScene.attachChild(mAskButton2);
 
-
         mScene.registerTouchArea(mAnswerButton2);
         mScene.registerTouchArea(mAskButton2);
 
         this.mScene.attachChild(layerEntity);
         this.mScene.attachChild(zoomLayerEntity);
-
         return this.mScene;
     }
+
 
     private void updateQwubbleMode(QwubbleMode mode) {
         mQwubbleMode = mode;
@@ -297,6 +299,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(context);
             Log.d(TAG, "REGID was " + regid);
+            sendRegistrationIdToBackend("FAKE_REGISTRATION_ID");
             if (regid.isEmpty()) {
                 Log.d(TAG, "REGID was empty");
                 registerInBackground();
@@ -305,7 +308,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             Log.d(TAG, "SETUP PLAY SERVICES FAILED!!!!!!");
         }
     }
-
 
     @Override
     public boolean onSceneTouchEvent(final Scene scene, final TouchEvent sceneTouchEvent) {
@@ -329,12 +331,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     public void onResumeGame() {
         super.onResumeGame();
         this.enableAccelerationSensor(this);
-
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.google.android.c2dm.intent.RECEIVE");
         filter.addCategory("com.bignerdranch.qwubble");
         registerReceiver(mGCMBroadcastReceiver, filter);
-
         Log.d(TAG, "receiver registerd!!!!");
         checkPlayServices();
     }
@@ -342,8 +342,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     @Override
     public void onPauseGame() {
         super.onPauseGame();
+        EventBus.getDefault().unregister(this);
         this.disableAccelerationSensor();
         unregisterReceiver(mGCMBroadcastReceiver);
+    }
+
+    public void onEvent(ShowQwubbleEvent event){
+        Debug.d(TAG, "SHOW A QWUBBLE");
+        QwubbleDialogFragment.newInstance(event.mQwubble)
+                             .show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
     }
 
 
