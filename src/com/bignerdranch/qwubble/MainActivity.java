@@ -63,9 +63,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends SimpleBaseGameActivity implements IAccelerationListener, IOnSceneTouchListener {
 
-    private int CAMERA_WIDTH = 480;
-    private int CAMERA_HEIGHT = 720;
-
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -76,6 +73,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     AtomicInteger msgId = new AtomicInteger();
     SharedPreferences prefs;
     Context context;
+    private CameraSize mCameraSize;
 
     String regid;
 
@@ -109,11 +107,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         int widthPixels = getResources().getDisplayMetrics().widthPixels;
         int heightPixels = getResources().getDisplayMetrics().heightPixels;
 
-        CAMERA_WIDTH = widthPixels;
-        CAMERA_HEIGHT = heightPixels;
+        CameraSize size = new CameraSize(widthPixels, heightPixels);
+        mCameraSize = size;
 
-        final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-        return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+        final Camera camera = new Camera(0, 0, size.getWidth(), size.getHeight());
+        return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(size.getWidth(), size.getHeight()), camera);
 
     }
 
@@ -219,17 +217,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.getVertexBufferObjectManager();
 
         QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld);
-        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity();
+        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize);
         layerEntity.setZoomLayer(zoomLayerEntity);
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
-        setupQwubbles();
-
-        int buttonWidth = CAMERA_WIDTH / 2;
+        int buttonWidth = mCameraSize.getWidth() / 2;
         int offset = 0;
 
-        mAnswerButton2 = new Rectangle(0, CAMERA_HEIGHT - (BUTTON_HEIGHT + offset), buttonWidth, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
+        mAnswerButton2 = new Rectangle(0, mCameraSize.getHeight() - (BUTTON_HEIGHT + offset), buttonWidth, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 updateQwubbleMode(QwubbleMode.ANSWER);
@@ -242,7 +238,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mAnswerButton2.setColor(Color.GREEN);
         mAnswerButton2.attachChild(mAnswerButtonText2);
 
-        mAskButton2 = new Rectangle(buttonWidth, CAMERA_HEIGHT - (BUTTON_HEIGHT + offset), (CAMERA_WIDTH / 2) + 1, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
+        mAskButton2 = new Rectangle(buttonWidth, mCameraSize.getHeight() - (BUTTON_HEIGHT + offset), (mCameraSize.getWidth() / 2) + 1, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 updateQwubbleMode(QwubbleMode.ASK);
@@ -281,14 +277,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             mAskButtonText2.setAlpha(1.0f);
             mAskButton2.setColor(Color.GREEN);
         }
-    }
-
-    private void setupQwubbles() {
-        for (int i = 0; i < 8; i++) {
-            int randomX = 0 + (int) (Math.random() * CAMERA_WIDTH);
-            addFace(randomX, 0);
-        }
-
     }
 
     private SharedPreferences getGCMPreferences(Context context) {
@@ -371,61 +359,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         unregisterReceiver(mGCMBroadcastReceiver);
     }
 
-
-    private void addFace(final float x, final float y) {
-        this.mFaceCount++;
-        Debug.d("Faces: " + this.mFaceCount);
-        Debug.d("px: " + x + ", py =" + y);
-
-        final AnimatedSprite face;
-        final Body body;
-
-        new AsyncTask<Void, Void, TextureRegion>() {
-            TextureRegion imageFromWebservice;
-
-            @Override
-            protected TextureRegion doInBackground(Void... params) {
-                try {
-                    ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
-                        @Override
-                        public InputStream open() throws IOException {
-                            URL url = new URL(getCloudinaryUrl("http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg"));
-                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                            connection.setDoInput(true);
-                            connection.connect();
-                            InputStream input = connection.getInputStream();
-                            BufferedInputStream in = new BufferedInputStream(input);
-                            return in;
-                        }
-                    });
-                    mTexture.load();
-                    imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
-
-                } catch (IOException e) {
-                    Debug.e(e);
-                }
-                return imageFromWebservice;
-            }
-
-            private String getCloudinaryUrl(String url) {
-                return "http://res.cloudinary.com/dcu4qkwdf/image/fetch/w_100,h_100,r_max,c_thumb,g_face,c_fill,t_png,/" + url;
-            }
-
-            @Override
-            protected void onPostExecute(TextureRegion textureRegion) {
-                VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
-                Sprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
-
-                Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
-
-                mScene.attachChild(entity);
-                mScene.registerTouchArea(entity);
-                mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
-
-            }
-        }.execute();
-
-    }
 
     enum QwubbleMode {
         ANSWER,

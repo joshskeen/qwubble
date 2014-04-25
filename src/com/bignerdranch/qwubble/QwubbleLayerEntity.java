@@ -8,6 +8,7 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
@@ -100,7 +101,7 @@ public class QwubbleLayerEntity extends Entity {
                     ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                         @Override
                         public InputStream open() throws IOException {
-                            URL url = new URL("http://www.floridanest.com/_/rsrc/1394128557181/Sell-your-home-with-Marie-Louise-Verbeke/ROUND%20AVATAR%20-%20ML.png?height=120&width=120");
+                            URL url = new URL(getCloudinaryUrl("http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg"));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
@@ -118,18 +119,19 @@ public class QwubbleLayerEntity extends Entity {
                 return imageFromWebservice;
             }
 
+            private String getCloudinaryUrl(String url) {
+                return "http://res.cloudinary.com/dcu4qkwdf/image/fetch/w_100,h_100,r_max,c_thumb,g_face,c_fill,t_png,/" + url;
+            }
+
             @Override
             protected void onPostExecute(TextureRegion textureRegion) {
-
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
-
-                //create face from TextureRegion
-
                 QwubbleSprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
                 entity.setZoomLayer(mZoomLayer);
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
-                attachChild(entity);
+
+                mScene.attachChild(entity);
                 mScene.registerTouchArea(entity);
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
 
@@ -137,6 +139,7 @@ public class QwubbleLayerEntity extends Entity {
         }.execute();
 
     }
+
 
 
     public VertexBufferObjectManager getVertexBufferObjectManager() {

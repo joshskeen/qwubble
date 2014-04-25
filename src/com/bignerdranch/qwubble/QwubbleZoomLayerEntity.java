@@ -11,6 +11,12 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
     private static final String TAG = "QwubbleZoomLayerEntity";
     private Sprite mNextZoomSprite;
     private ZoomSprite mZoomSprite;
+    private CameraSize mCameraSize;
+
+    public QwubbleZoomLayerEntity(CameraSize cameraSize) {
+        super();
+        mCameraSize = cameraSize;
+    }
 
     @Override
     public void onAttached() {
@@ -27,9 +33,12 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
             }
 
             float[] center = new float[] {
-                    480 / 2,
-                    720 / 2
+                    mCameraSize.getWidth(),
+                    mCameraSize.getHeight(),
             };
+
+//            center[0] -= sprite.getWidth();
+//            center[1] -= sprite.getHeight();
 
             Log.i(TAG, "Center coords: " + center[0] + ", " + center[1]);
 
