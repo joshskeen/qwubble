@@ -71,6 +71,7 @@ public class QwubbleDialogFragment extends DialogFragment {
         mAnswersView.setEmptyView(noAnswersFound);
 
         mQuestionText.setText(mIQwubble.getQuestion());
+        Debug.d("QUBBLE ID: " + mIQwubble.getId());
 
         mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,23 +127,23 @@ public class QwubbleDialogFragment extends DialogFragment {
 
             @Override
             protected void onPostExecute(final List<AnswerData> answerDatas) {
-                Log.d(TAG, "GOT: " + answerDatas);
-                super.onPostExecute(answerDatas);
-                mAnswerDataArray = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
-                    @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
-                        if (convertView == null) {
-                            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-                            View inflate = layoutInflater.inflate(R.layout.answer_item, parent, false);
-                            TextView answerText = (TextView) inflate.findViewById(R.id.mAnswerDisplayTV);
-                            answerText.setText(getItem(position).answer);
-                            return inflate;
-                        }
-                        return super.getView(position, convertView, parent);
-
-                    }
-                };
-                mAnswersView.setAdapter(mAnswerDataArray);
+//                Log.d(TAG, "GOT: " + answerDatas);
+//                super.onPostExecute(answerDatas);
+//                mAnswerDataArray = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
+//                    @Override
+//                    public View getView(int position, View convertView, ViewGroup parent) {
+//                        if (convertView == null) {
+//                            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+//                            View inflate = layoutInflater.inflate(R.layout.answer_item, parent, false);
+//                            TextView answerText = (TextView) inflate.findViewById(R.id.mAnswerDisplayTV);
+//                            answerText.setText(getItem(position).answer);
+//                            return inflate;
+//                        }
+//                        return super.getView(position, convertView, parent);
+//
+//                    }
+//                };
+//                mAnswersView.setAdapter(mAnswerDataArray);
             }
         }.execute();
     }
