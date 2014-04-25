@@ -9,11 +9,14 @@ import android.util.Log;
 import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.bignerdranch.qwubble.data.QwubbleDialogFragment;
+import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.greenrobot.event.EventBus;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
@@ -54,6 +57,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     String SENDER_ID = "735653081262";
+    public static final int QWUBBLE_WIDTH = 150;
 
     TextView mDisplay;
     GoogleCloudMessaging gcm;
@@ -63,7 +67,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private CameraSize mCameraSize;
     private ZoomLayerEntity mZoomLayer;
 
-    String regid;
+    public String regid;
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -86,6 +90,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Rectangle mAskButton2;
     private Rectangle mAnswerButton2;
     public static final int BUTTON_HEIGHT = 100;
+    private QwubbleLayerEntity mQwubbleLayerEntity;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -184,9 +189,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mGCMBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String data = intent.getStringExtra("data");
-                Debug.d("alert => ", "" + intent.getExtras().getString("alert"));
-                intent.getExtras().getString("time");
+                //handles new Questions & Answers being sent
+                String data = intent.getStringExtra("qwubble");
+                System.out.println(data);
+                Gson gson = new Gson();
+                JsonObject asJsonObject1 = new JsonParser().parse(data).getAsJsonObject();
+                System.out.println(asJsonObject1);
+                String type = asJsonObject1.get("type").getAsString();
+                System.out.println(type);
+                if(type.equals("question_creation_notification")){
+                    GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
+                    mQwubbleLayerEntity.addQuestion(response.mQuestionData);
+                } else {
+                    Debug.d(TAG, "NOTHING!");
+                }
+                System.out.println("----> " + data);
             }
         };
 
@@ -202,10 +219,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         Highlighter highlighter = new Highlighter(this, getTextureManager());
 
-        QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
+        mQwubbleLayerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
+
         ZoomLayerEntity zoomLayerEntity = new ZoomLayerEntity(mCameraSize, highlighter);
-        layerEntity.setHighlighter(highlighter);
-        layerEntity.setZoomLayer(zoomLayerEntity);
+        mQwubbleLayerEntity.setHighlighter(highlighter);
+        mQwubbleLayerEntity.setZoomLayer(zoomLayerEntity);
         zoomLayerEntity.setHighlighter(highlighter);
         mZoomLayer = zoomLayerEntity;
 
@@ -246,7 +264,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mScene.registerTouchArea(mAnswerButton2);
         mScene.registerTouchArea(mAskButton2);
 
-        this.mScene.attachChild(layerEntity);
+        this.mScene.attachChild(mQwubbleLayerEntity);
         this.mScene.attachChild(zoomLayerEntity);
         return this.mScene;
     }

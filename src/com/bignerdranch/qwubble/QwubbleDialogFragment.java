@@ -1,4 +1,4 @@
-package com.bignerdranch.qwubble.data;
+package com.bignerdranch.qwubble;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,13 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
+import com.bignerdranch.qwubble.data.AnswerData;
+import com.bignerdranch.qwubble.data.QuestionData;
+import com.bignerdranch.qwubble.data.QwubbleData;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
-import com.bignerdranch.qwubble.R;
-import com.bignerdranch.qwubble.Util;
+import org.andengine.util.debug.Debug;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 public class QwubbleDialogFragment extends DialogFragment {
 
@@ -36,11 +36,12 @@ public class QwubbleDialogFragment extends DialogFragment {
     private static final String TAG = "QwubbleDialogFragment";
     private static String mRegID;
     private TextView mTextView;
-    private View mAnswersView;
+    private ListView mAnswersView;
     private QwubbleData mQwubbleData;
     private ImageView mImageView;
     private View mAnswerQuestionButton;
     private EditText mAnswerQuestionEditText;
+    private TextView noAnswersFound;
 
     public static QwubbleDialogFragment newInstance(QwubbleData data, String regId) {
         QwubbleDialogFragment qwubbleDialogFragment = new QwubbleDialogFragment();
@@ -58,25 +59,31 @@ public class QwubbleDialogFragment extends DialogFragment {
 
         View view = i.inflate(R.layout.qwubble_dialog_fragment, null);
 
+        loadQwubbleAnswers();
         loadQwubbleImage();
+
         mTextView = (TextView) view.findViewById(R.id.qwubbleQuestion);
         mImageView = (ImageView) view.findViewById(R.id.qwubbleImage);
         mAnswersView = (ListView) view.findViewById(R.id.qwubbleAnswers);
         mAnswerQuestionButton = view.findViewById(R.id.answerQuestionButton);
         mAnswerQuestionEditText = (EditText) view.findViewById(R.id.mAnswerQuestionEditText);
+        noAnswersFound = (TextView) view.findViewById(R.id.noAnswersFound);
+        mAnswersView.setEmptyView(noAnswersFound);
+
         mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QwubbleWebservice.getService().postQuestion(mRegID, mAnswerQuestionEditText.getText().toString(), new Callback<QuestionResponse>() {
+                QwubbleWebservice.getService().postQuestion(mRegID, mAnswerQuestionEditText.getText().toString(), new Callback<QuestionData>() {
                     @Override
-                    public void success(QuestionResponse questionResponse, Response response) {
+                    public void success(QuestionData questionResponse, Response response) {
                         mAnswerQuestionEditText.setText("");
+                        Toast.makeText(getActivity(), "Answer Posted!", Toast.LENGTH_LONG);
                         dismiss();
                     }
 
                     @Override
                     public void failure(RetrofitError retrofitError) {
-                       Log.d(TAG, "FAILURE");
+                        Log.d(TAG, "FAILURE");
                     }
                 });
             }
@@ -93,6 +100,49 @@ public class QwubbleDialogFragment extends DialogFragment {
                 );
 
         return b.create();
+    }
+
+    //get the qwubble answers, and display them in the list
+    private void loadQwubbleAnswers() {
+        new AsyncTask<Void, Void, List<AnswerData>>() {
+            List<AnswerData> mAnswerDatas;
+
+            @Override
+            protected List<AnswerData> doInBackground(Void... params) {
+                QwubbleWebservice.getService().getAnswers(mQwubbleData.mId, new Callback<List<AnswerData>>() {
+                    @Override
+                    public void success(List<AnswerData> answerDatas, Response response) {
+                        mAnswerDatas = answerDatas;
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+                        Debug.e(TAG, "OH NO!!!! - retrgoit error: " + retrofitError.getCause());
+                    }
+                });
+                return mAnswerDatas;
+            }
+
+            @Override
+            protected void onPostExecute(final List<AnswerData> answerDatas) {
+                Log.d(TAG, "GOT: " + answerDatas);
+                super.onPostExecute(answerDatas);
+                ArrayAdapter<AnswerData> answerDataArray = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        if (convertView == null) {
+                            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+                            View inflate = layoutInflater.inflate(R.layout.answer_item, parent, false);
+                            TextView answerText = (TextView) inflate.findViewById(R.id.mAnswerDisplayTV);
+                            answerText.setText(getItem(position).answer);
+                            return inflate;
+                        }
+                        return super.getView(position, convertView, parent);
+
+                    }
+                };
+            }
+        };
     }
 
     private void loadQwubbleImage() {
@@ -114,7 +164,6 @@ public class QwubbleDialogFragment extends DialogFragment {
     }
 
     private Bitmap downloadImage(String url) {
-        //---------------------------------------------------
         Bitmap bm = null;
         try {
             URL aURL = new URL(url);
@@ -126,10 +175,9 @@ public class QwubbleDialogFragment extends DialogFragment {
             bis.close();
             is.close();
         } catch (IOException e) {
-            Log.e("Hub", "Error getting the image from server : " + e.getMessage().toString());
+            Log.e("NOOOO", "Error getting the image from server : " + e.getMessage().toString());
         }
         return bm;
-        //---------------------------------------------------
     }
 
 

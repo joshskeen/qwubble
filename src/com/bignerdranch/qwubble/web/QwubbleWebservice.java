@@ -1,7 +1,7 @@
 package com.bignerdranch.qwubble.web;
 
 import com.bignerdranch.qwubble.data.AnswerData;
-import com.bignerdranch.qwubble.data.QuestionResponse;
+import com.bignerdranch.qwubble.data.QuestionData;
 import com.google.gson.Gson;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -48,13 +48,18 @@ public class QwubbleWebservice implements QwubbleWebInterface {
     }
 
     @Override
-    public void getQuestionAnswers(@Path("question_id") int questionId, Callback<List<AnswerData>> callback) {
-        getService().getQuestionAnswers(questionId, callback);
+    public void getAnswers(@Path("question_id") int questionId, Callback<List<AnswerData>> callback) {
+        getService().getAnswers(questionId, callback);
     }
 
     @Override
-    public void postQuestion(@Field("registration_id") String registrationId, @Field("question") String question, Callback<QuestionResponse> callback) {
+    public void postQuestion(@Field("registration_id") String registrationId, @Field("question") String question, Callback<QuestionData> callback) {
         getService().postQuestion(registrationId, question, callback);
+    }
+
+    @Override
+    public void postAnswer(@Field("question_id") String questionId, @Field("registration_id") String registrationId, @Field("answer") String answer, Callback<Void> callback) {
+        getService().postAnswer(questionId, registrationId, answer, callback);
     }
 
 }

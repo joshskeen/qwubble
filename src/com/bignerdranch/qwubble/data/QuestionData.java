@@ -2,7 +2,9 @@ package com.bignerdranch.qwubble.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class QuestionResponse {
+import java.io.Serializable;
+
+public class QuestionData implements Serializable, IQwubble{
 
     @SerializedName("id")
     public String id;
@@ -25,4 +27,10 @@ public class QuestionResponse {
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
+
+    @Override
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
 }

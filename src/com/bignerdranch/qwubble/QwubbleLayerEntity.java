@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.bignerdranch.qwubble.data.IQwubble;
+import com.bignerdranch.qwubble.data.QuestionData;
 import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
@@ -32,14 +34,13 @@ import java.net.URL;
 public class QwubbleLayerEntity extends Entity {
     private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 
-
     private PhysicsWorld mPhysicsWorld;
     private CameraSize mCameraSize;
     private VertexBufferObjectManager mVertexBufferObjectManager;
     private TextureManager mTextureManager;
     private Scene mScene;
     private ZoomLayerEntity mZoomLayer;
-    private int mFaceCount;
+    private int qwubbleCount;
     private Highlighter mHighlighter;
 
 
@@ -68,7 +69,6 @@ public class QwubbleLayerEntity extends Entity {
         PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyDef.BodyType.StaticBody, wallFixtureDef);
         PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyDef.BodyType.StaticBody, wallFixtureDef);
 
-
         attachChild(ground);
         attachChild(roof);
         attachChild(left);
@@ -76,16 +76,16 @@ public class QwubbleLayerEntity extends Entity {
 
         registerUpdateHandler(this.mPhysicsWorld);
 
-        for (int i = 0; i < 8; i++) {
-            int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth());
-            addFace(randomX, 0);
-        }
-
     }
 
-    private void addFace(final float x, final float y) {
-        this.mFaceCount++;
-        Debug.d("Faces: " + this.mFaceCount);
+    public void addQuestion(QuestionData questionData) {
+        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
+        addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, questionData);
+    }
+
+    private void addQwubble(final float x, final float y, final IQwubble qwubble) {
+        this.qwubbleCount++;
+        Debug.d("Qwubbles: " + this.qwubbleCount);
         Debug.d("px: " + x + ", py =" + y);
 
         final AnimatedSprite face;
@@ -100,7 +100,7 @@ public class QwubbleLayerEntity extends Entity {
                     ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                         @Override
                         public InputStream open() throws IOException {
-                            URL url = new URL(Util.getCloudinaryUrl("http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg"));
+                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl()));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
