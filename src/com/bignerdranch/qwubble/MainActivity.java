@@ -61,6 +61,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     SharedPreferences prefs;
     Context context;
     private CameraSize mCameraSize;
+    private QwubbleZoomLayerEntity mZoomLayer;
 
     String regid;
 
@@ -207,6 +208,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
         QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize);
         layerEntity.setZoomLayer(zoomLayerEntity);
+        mZoomLayer = zoomLayerEntity;
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
@@ -349,6 +351,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         Debug.d(TAG, "SHOW A QWUBBLE");
         QwubbleDialogFragment.newInstance(event.mQwubble)
                              .show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+        mZoomLayer.zoomToSprite(event.mSprite);
     }
 
 
