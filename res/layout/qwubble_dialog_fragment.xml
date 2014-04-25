@@ -46,6 +46,7 @@
 
     <EditText
             android:background="#1d1d1d"
+            android:id="@+id/mAnswerQuestionEditText"
             android:hint="Answer this question..."
             android:layout_width="match_parent"
             android:layout_height="60dp"

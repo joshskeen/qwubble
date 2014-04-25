@@ -2,25 +2,27 @@ package com.bignerdranch.qwubble.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AnswerData {
+public class QuestionResponse {
 
     @SerializedName("id")
     public String id;
 
+    @SerializedName("registration_id")
+    public String registrationId;
+
     @SerializedName("question")
     public String question;
 
-    @SerializedName("question_id")
-    public int questionId;
-
-
+    @SerializedName("image_url")
+    public String imageUrl;
 
     @Override
     public String toString() {
-        return "AnswerData{" +
+        return "QuestionResponse{" +
                 "id='" + id + '\'' +
+                ", registrationId='" + registrationId + '\'' +
                 ", question='" + question + '\'' +
-                ", questionId=" + questionId +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.QwubbleDialogFragment;
+import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -145,7 +146,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             public void success(Void aVoid, Response response) {
                 Log.d(TAG, "Success");
             }
-
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.d(TAG, "Failure");
@@ -348,8 +348,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     public void onEvent(ShowQwubbleEvent event){
         Debug.d(TAG, "SHOW A QWUBBLE");
-        QwubbleDialogFragment.newInstance(event.mQwubble)
-                             .show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+        QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
         mZoomLayer.zoomToSprite(event.mSprite);
     }
 

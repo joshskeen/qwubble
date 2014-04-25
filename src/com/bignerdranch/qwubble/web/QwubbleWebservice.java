@@ -1,12 +1,19 @@
-package com.bignerdranch.qwubble;
+package com.bignerdranch.qwubble.web;
 
+import com.bignerdranch.qwubble.data.AnswerData;
+import com.bignerdranch.qwubble.data.QuestionResponse;
+import com.google.gson.Gson;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.ConversionException;
+import retrofit.converter.GsonConverter;
 import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.POST;
+import retrofit.http.Path;
+import retrofit.mime.TypedInput;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class QwubbleWebservice implements QwubbleWebInterface {
 
@@ -24,27 +31,31 @@ public class QwubbleWebservice implements QwubbleWebInterface {
                         requestFacade.addHeader(HEADER_ACCEPT, APPLICATION_JSON);
                     }
                 })
+                .setConverter(new GsonConverter(new Gson()) {
+                    @Override
+                    public Object fromBody(TypedInput body, Type type) throws ConversionException {
+                        //Util.debugConverter(body);
+                        return super.fromBody(body, type);
+                    }
+                })
                 .build();
         return restAdapter.create(QwubbleWebInterface.class);
-    }
-
-    public void getPing(Callback<Void> callback) {
-        getService().getPing(callback);
     }
 
     @Override
     public void postRegistration(@Field("registration_id") String registrationId, Callback<Void> callback) {
         getService().postRegistration(registrationId, callback);
     }
+
+    @Override
+    public void getQuestionAnswers(@Path("question_id") int questionId, Callback<List<AnswerData>> callback) {
+        getService().getQuestionAnswers(questionId, callback);
+    }
+
+    @Override
+    public void postQuestion(@Field("registration_id") String registrationId, @Field("question") String question, Callback<QuestionResponse> callback) {
+        getService().postQuestion(registrationId, question, callback);
+    }
+
 }
 
-interface QwubbleWebInterface {
-
-    @GET("/ping")
-    public void getPing(Callback<Void> callback);
-
-    @POST("/registrations")
-    @FormUrlEncoded
-    public void postRegistration(@Field("registration_id") String registrationId, Callback<Void> callback);
-
-}
