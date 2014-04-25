@@ -38,7 +38,7 @@ public class QwubbleLayerEntity extends Entity {
     private VertexBufferObjectManager mVertexBufferObjectManager;
     private TextureManager mTextureManager;
     private Scene mScene;
-    private QwubbleZoomLayerEntity mZoomLayer;
+    private ZoomLayerEntity mZoomLayer;
     private int mFaceCount;
     private Highlighter mHighlighter;
 
@@ -143,11 +143,11 @@ public class QwubbleLayerEntity extends Entity {
         return mTextureManager;
     }
 
-    public QwubbleZoomLayerEntity getZoomLayer() {
+    public ZoomLayerEntity getZoomLayer() {
         return mZoomLayer;
     }
 
-    public void setZoomLayer(QwubbleZoomLayerEntity zoomLayer) {
+    public void setZoomLayer(ZoomLayerEntity zoomLayer) {
         mZoomLayer = zoomLayer;
     }
 

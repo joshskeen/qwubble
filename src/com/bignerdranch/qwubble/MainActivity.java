@@ -61,7 +61,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     SharedPreferences prefs;
     Context context;
     private CameraSize mCameraSize;
-    private QwubbleZoomLayerEntity mZoomLayer;
+    private ZoomLayerEntity mZoomLayer;
 
     String regid;
 
@@ -203,7 +203,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         Highlighter highlighter = new Highlighter(this, getTextureManager());
 
         QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
-        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize, highlighter);
+        ZoomLayerEntity zoomLayerEntity = new ZoomLayerEntity(mCameraSize, highlighter);
         layerEntity.setHighlighter(highlighter);
         layerEntity.setZoomLayer(zoomLayerEntity);
         zoomLayerEntity.setHighlighter(highlighter);

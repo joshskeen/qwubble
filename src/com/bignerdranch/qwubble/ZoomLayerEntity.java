@@ -7,14 +7,14 @@ import org.andengine.entity.sprite.Sprite;
 /**
  * Created by bphillips on 4/24/14.
  */
-public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener {
+public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener {
     private static final String TAG = "QwubbleZoomLayerEntity";
     private Sprite mNextZoomSprite;
     private ZoomSprite mZoomSprite;
     private CameraSize mCameraSize;
     private Highlighter mHighlighter;
 
-    public QwubbleZoomLayerEntity(CameraSize cameraSize, Highlighter highlighter) {
+    public ZoomLayerEntity(CameraSize cameraSize, Highlighter highlighter) {
         super();
         mCameraSize = cameraSize;
         mHighlighter = highlighter;

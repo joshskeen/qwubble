@@ -17,7 +17,7 @@ class QwubbleSprite extends Sprite {
     private static final String TAG = "QwubbleSprite";
 
     private boolean mZoomed = false;
-    private QwubbleZoomLayerEntity mZoomLayer;
+    private ZoomLayerEntity mZoomLayer;
 
     private QwubbleData mQwubble;
 
@@ -45,11 +45,11 @@ class QwubbleSprite extends Sprite {
         }
     }
 
-    public QwubbleZoomLayerEntity getZoomLayer() {
+    public ZoomLayerEntity getZoomLayer() {
         return mZoomLayer;
     }
 
-    public void setZoomLayer(QwubbleZoomLayerEntity zoomLayer) {
+    public void setZoomLayer(ZoomLayerEntity zoomLayer) {
         mZoomLayer = zoomLayer;
     }
 }
