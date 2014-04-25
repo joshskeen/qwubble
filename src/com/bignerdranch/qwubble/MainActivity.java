@@ -185,7 +185,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             @Override
             public void onReceive(Context context, Intent intent) {
                 String data = intent.getStringExtra("data");
-                Debug.d("alert => ", intent.getExtras().getString("alert"));
+                Debug.d("alert => ", "" + intent.getExtras().getString("alert"));
                 intent.getExtras().getString("time");
             }
         };
@@ -351,6 +351,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
 
     enum QwubbleMode {
         ANSWER,
