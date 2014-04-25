@@ -299,7 +299,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(context);
             Log.d(TAG, "REGID was " + regid);
-            sendRegistrationIdToBackend("FAKE_REGISTRATION_ID");
             if (regid.isEmpty()) {
                 Log.d(TAG, "REGID was empty");
                 registerInBackground();
