@@ -41,7 +41,6 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TextureRegion;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -66,6 +65,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     SharedPreferences prefs;
     Context context;
     private CameraSize mCameraSize;
+    private ZoomLayerEntity mZoomLayer;
 
     public String regid;
 
@@ -75,8 +75,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final String TAG = "MainActivity";
 
     private BitmapTextureAtlas mBitmapTextureAtlas;
-
-    private TiledTextureRegion mCircleFaceTextureRegion;
 
     private Scene mScene;
 
@@ -219,11 +217,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mScene.setOnSceneTouchListener(this);
         this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
 
-        this.getVertexBufferObjectManager();
+        Highlighter highlighter = new Highlighter(this, getTextureManager());
 
         mQwubbleLayerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
-        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize);
+
+        ZoomLayerEntity zoomLayerEntity = new ZoomLayerEntity(mCameraSize, highlighter);
+        mQwubbleLayerEntity.setHighlighter(highlighter);
         mQwubbleLayerEntity.setZoomLayer(zoomLayerEntity);
+        zoomLayerEntity.setHighlighter(highlighter);
+        mZoomLayer = zoomLayerEntity;
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
@@ -363,6 +365,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     public void onEvent(ShowQwubbleEvent event){
         Debug.d(TAG, "SHOW A QWUBBLE");
+        mZoomLayer.zoomToSprite(event.mSprite);
         QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
     }
 

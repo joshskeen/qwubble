@@ -7,15 +7,17 @@ import org.andengine.entity.sprite.Sprite;
 /**
  * Created by bphillips on 4/24/14.
  */
-public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener {
+public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener {
     private static final String TAG = "QwubbleZoomLayerEntity";
     private Sprite mNextZoomSprite;
     private ZoomSprite mZoomSprite;
     private CameraSize mCameraSize;
+    private Highlighter mHighlighter;
 
-    public QwubbleZoomLayerEntity(CameraSize cameraSize) {
+    public ZoomLayerEntity(CameraSize cameraSize, Highlighter highlighter) {
         super();
         mCameraSize = cameraSize;
+        mHighlighter = highlighter;
     }
 
     @Override
@@ -42,6 +44,8 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
             mZoomSprite = new ZoomSprite(center[0], center[1], 4, sprite);
             mZoomSprite.setOnZoomListener(this);
             attachChild(mZoomSprite);
+            mHighlighter.addHighlight(mZoomSprite);
+
             mZoomSprite.zoomIn();
             sprite.setVisible(false);
         }
@@ -60,5 +64,13 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
                 zoomToSprite(sprite);
             }
         }
+    }
+
+    public void setHighlighter(Highlighter highlighter) {
+        mHighlighter = highlighter;
+    }
+
+    public Highlighter getHighlighter() {
+        return mHighlighter;
     }
 }

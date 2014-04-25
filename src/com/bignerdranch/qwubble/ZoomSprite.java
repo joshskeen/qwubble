@@ -55,6 +55,7 @@ public class ZoomSprite extends Sprite {
             unregisterEntityModifier(mZoomModifier);
         }
 
+
         mZoomModifier = new SingleValueSpanEntityModifier(0.6f, mZoomRatio, zoom, EaseBounceOut.getInstance()) {
 
             @Override
