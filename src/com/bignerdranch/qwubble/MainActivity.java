@@ -16,6 +16,8 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.modifier.IEntityModifier;
+import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -89,8 +91,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     @Override
     public EngineOptions onCreateEngineOptions() {
 
-        int widthPixels = getResources().getDisplayMetrics().widthPixels;
-        int heightPixels = getResources().getDisplayMetrics().heightPixels;
+        int widthPixels = 720;
+        int heightPixels = 1280;
 
         CameraSize size = new CameraSize(widthPixels, heightPixels);
         mCameraSize = size;
