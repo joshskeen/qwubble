@@ -8,11 +8,26 @@ import org.andengine.entity.sprite.Sprite;
  * Created by bphillips on 4/24/14.
  */
 public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener {
+    private Object mZoomData;
+
+    public ZoomListener getZoomListener() {
+        return mZoomListener;
+    }
+
+    public void setZoomListener(ZoomListener zoomListener) {
+        mZoomListener = zoomListener;
+    }
+
+    public interface ZoomListener {
+        public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData);
+    }
+
     private static final String TAG = "QwubbleZoomLayerEntity";
     private Sprite mNextZoomSprite;
     private ZoomSprite mZoomSprite;
     private CameraSize mCameraSize;
     private Highlighter mHighlighter;
+    private ZoomListener mZoomListener;
 
     public ZoomLayerEntity(CameraSize cameraSize, Highlighter highlighter) {
         super();
@@ -31,7 +46,8 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
         }
     }
 
-    public void zoomToSprite(Sprite sprite) {
+
+    public void zoomToSprite(Sprite sprite, Object zoomData) {
         if (mZoomSprite != null && mZoomSprite.getZoomRatio() != 0) {
             mNextZoomSprite = sprite;
             mZoomSprite.zoomOut();
@@ -39,6 +55,8 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
             if (mZoomSprite != null) {
                 detachChild(mZoomSprite);
             }
+
+            mZoomData = zoomData;
 
             float[] center = new float[] {
                     mCameraSize.getWidth() / 2,
@@ -67,7 +85,13 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
             if (mNextZoomSprite != null) {
                 Sprite sprite = mNextZoomSprite;
                 mNextZoomSprite = null;
-                zoomToSprite(sprite);
+                zoomToSprite(sprite, null);
+            }
+        }
+
+        if (zoomRatio == 1 && percentComplete == 1) {
+            if (mZoomListener != null) {
+                mZoomListener.onZoomComplete(zoomSprite, mZoomData);
             }
         }
     }

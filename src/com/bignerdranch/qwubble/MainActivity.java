@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
+import com.bignerdranch.qwubble.data.QwubbleData;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -365,8 +366,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     public void onEvent(ShowQwubbleEvent event){
         Debug.d(TAG, "SHOW A QWUBBLE");
-        mZoomLayer.zoomToSprite(event.mSprite);
-        QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+        mZoomLayer.zoomToSprite(event.mSprite, event.mQwubble);
+        mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
+            @Override
+            public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
+                QwubbleData data = (QwubbleData) zoomData;
+                QwubbleDialogFragment.newInstance(data, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+            }
+        });
     }
 
     @Override
