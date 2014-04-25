@@ -1,6 +1,10 @@
 package com.bignerdranch.qwubble;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -10,6 +14,7 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
+import com.bignerdranch.qwubble.data.IQwubble;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -22,6 +27,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -49,6 +55,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends SimpleBaseGameActivity implements IAccelerationListener, IOnSceneTouchListener {
@@ -78,8 +86,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     private Scene mScene;
 
-    private PhysicsWorld mPhysicsWorld;
-    private int mFaceCount = 0;
     private BroadcastReceiver mGCMBroadcastReceiver;
     private TextureRegion mFromAsset;
     private Font mFont;
@@ -91,6 +97,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Rectangle mAnswerButton2;
     public static final int BUTTON_HEIGHT = 100;
     private QwubbleLayerEntity mQwubbleLayerEntity;
+    private AnswerLayerEntity mAnswerLayerEntity;
+
+    private List<Entity> mLayers = new ArrayList<Entity>();
+    private List<PhysicsWorld> mPhysicsWorlds = new ArrayList<PhysicsWorld>();
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -218,19 +228,29 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mScene = new Scene();
         this.mScene.setBackground(new Background(0, 0, 0));
         this.mScene.setOnSceneTouchListener(this);
-        this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
 
         Highlighter highlighter = new Highlighter(this, getTextureManager());
 
-        mQwubbleLayerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
+        mQwubbleLayerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene,
+                newPhysicsWorld(), mCameraSize);
+        mAnswerLayerEntity = new AnswerLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene,
+                newPhysicsWorld(), mCameraSize);
 
         ZoomLayerEntity zoomLayerEntity = new ZoomLayerEntity(mCameraSize, highlighter);
+
         mQwubbleLayerEntity.setHighlighter(highlighter);
         mQwubbleLayerEntity.setZoomLayer(zoomLayerEntity);
+
+        mAnswerLayerEntity.setHighlighter(highlighter);
+        mAnswerLayerEntity.setZoomLayer(zoomLayerEntity);
+
+        mLayers.add(mQwubbleLayerEntity);
+        mLayers.add(mAnswerLayerEntity);
+
+        selectLayer(mQwubbleLayerEntity);
         zoomLayerEntity.setHighlighter(highlighter);
         mZoomLayer = zoomLayerEntity;
 
-        this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
         int buttonWidth = mCameraSize.getWidth() / 2;
         int offset = 0;
@@ -270,6 +290,20 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mScene.attachChild(mQwubbleLayerEntity);
         this.mScene.attachChild(zoomLayerEntity);
         return this.mScene;
+    }
+
+    private void selectLayer(Entity entity) {
+        for (Entity layer : mLayers) {
+            layer.setVisible(layer == entity);
+        }
+    }
+
+    private PhysicsWorld newPhysicsWorld() {
+        PhysicsWorld world = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+
+        mPhysicsWorlds.add(world);
+
+        return world;
     }
 
 
@@ -342,7 +376,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     @Override
     public void onAccelerationChanged(final AccelerationData accelerationData) {
         final Vector2 gravity = Vector2Pool.obtain(accelerationData.getX(), accelerationData.getY());
-        this.mPhysicsWorld.setGravity(gravity);
+
+        for (PhysicsWorld world : mPhysicsWorlds) {
+            world.setGravity(gravity);
+        }
+
         Vector2Pool.recycle(gravity);
     }
 
@@ -368,8 +406,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     public void onEvent(ShowQwubbleEvent event) {
         Debug.d(TAG, "SHOW A QWUBBLE");
-        mZoomLayer.zoomToSprite(event.mSprite);
-        QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+        mZoomLayer.zoomToSprite(event.mSprite, event.mQwubble);
+        mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
+            @Override
+            public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
+                IQwubble data = (IQwubble) zoomData;
+                QwubbleDialogFragment.newInstance(data, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+            }
+        });
     }
 
     @Override
