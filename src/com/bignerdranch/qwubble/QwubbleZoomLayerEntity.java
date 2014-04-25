@@ -14,9 +14,10 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
     private CameraSize mCameraSize;
     private Highlighter mHighlighter;
 
-    public QwubbleZoomLayerEntity(CameraSize cameraSize) {
+    public QwubbleZoomLayerEntity(CameraSize cameraSize, Highlighter highlighter) {
         super();
         mCameraSize = cameraSize;
+        mHighlighter = highlighter;
     }
 
     @Override
@@ -43,6 +44,8 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
             mZoomSprite = new ZoomSprite(center[0], center[1], 4, sprite);
             mZoomSprite.setOnZoomListener(this);
             attachChild(mZoomSprite);
+            mHighlighter.addHighlight(mZoomSprite);
+
             mZoomSprite.zoomIn();
             sprite.setVisible(false);
         }

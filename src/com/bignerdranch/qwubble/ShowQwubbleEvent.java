@@ -9,6 +9,7 @@ public class ShowQwubbleEvent {
 
     public ShowQwubbleEvent(QwubbleData qwubble, QwubbleSprite sprite) {
         mQwubble = qwubble;
+        mSprite = sprite;
     }
 
 }

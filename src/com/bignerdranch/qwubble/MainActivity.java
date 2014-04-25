@@ -37,7 +37,6 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.HorizontalAlign;
@@ -204,7 +203,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         Highlighter highlighter = new Highlighter(this, getTextureManager());
 
         QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
-        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize);
+        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize, highlighter);
         layerEntity.setHighlighter(highlighter);
         layerEntity.setZoomLayer(zoomLayerEntity);
         zoomLayerEntity.setHighlighter(highlighter);
@@ -348,8 +347,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     public void onEvent(ShowQwubbleEvent event){
         Debug.d(TAG, "SHOW A QWUBBLE");
-        QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
         mZoomLayer.zoomToSprite(event.mSprite);
+        QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
     }
 
 
