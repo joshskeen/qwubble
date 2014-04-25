@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class QuestionData implements Serializable, IQwubble{
 
+    public static final String QWUBBLE_DEFAULT_IMG = "http://res.cloudinary.com/big-nerd-ranch/image/upload/v1398461928/varying_qubbles_kyc5bb.png";
     @SerializedName("id")
     public int id;
 
@@ -30,6 +31,9 @@ public class QuestionData implements Serializable, IQwubble{
 
     @Override
     public String getImageUrl() {
+        if(imageUrl == null){
+            return QWUBBLE_DEFAULT_IMG;
+        }
         return imageUrl;
     }
 

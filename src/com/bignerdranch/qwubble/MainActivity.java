@@ -150,6 +150,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             public void success(Void aVoid, Response response) {
                 Log.d(TAG, "Success");
             }
+
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.d(TAG, "Failure");
@@ -197,9 +198,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 System.out.println(asJsonObject1);
                 String type = asJsonObject1.get("type").getAsString();
                 System.out.println(type);
-                if(type.equals("question_creation_notification")){
+                if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData);
+                }else if(type.equals("answer_creation_notification")){
+
                 } else {
                     Debug.d(TAG, "NOTHING!");
                 }
@@ -363,7 +366,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         unregisterReceiver(mGCMBroadcastReceiver);
     }
 
-    public void onEvent(ShowQwubbleEvent event){
+    public void onEvent(ShowQwubbleEvent event) {
         Debug.d(TAG, "SHOW A QWUBBLE");
         mZoomLayer.zoomToSprite(event.mSprite);
         QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
