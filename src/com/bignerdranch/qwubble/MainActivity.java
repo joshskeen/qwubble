@@ -18,8 +18,6 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.modifier.IEntityModifier;
-import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -88,7 +86,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Text mAnswerButtonText2;
     private Rectangle mAskButton2;
     private Rectangle mAnswerButton2;
-    public static final int BUTTON_HEIGHT = 150;
+    public static final int BUTTON_HEIGHT = 100;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -112,7 +110,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mFromAsset = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBitmapTextureAtlas, this, "face_box.png", 0, 0);
         this.mEngine.getTextureManager().loadTexture(this.mBitmapTextureAtlas);
 //        FontFactory.createFromAsset(getFontManager(), getTextureManager(), bitmapTextureAtlas, this, "times.ttf", 45f, true, Color.WHITE);
-        mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 64);
+        mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48);
         mFont.load();
         startNewGameTexture.load();
     }
@@ -223,7 +221,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         };
 
-        mAnswerButtonText2 = new Text(0, 40, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
+        mAnswerButtonText2 = new Text(0, 18, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
         mAnswerButton2.setColor(Color.GREEN);
         mAnswerButton2.attachChild(mAnswerButtonText2);
@@ -236,7 +234,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         };
 
-        mAskButtonText2 = new Text(0, 40, this.mFont, "Ask", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        mAskButtonText2 = new Text(0, 18, this.mFont, "Ask", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
         mAskButtonText2.setAlpha(0.3f);
         mAskButtonText2.setX(mAskButton2.getWidth() / 2 - mAskButtonText2.getWidth() / 2);
         mAskButton2.attachChild(mAskButtonText2);
