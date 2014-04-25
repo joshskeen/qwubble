@@ -31,13 +31,11 @@ import java.net.URL;
  * Created by bphillips on 4/24/14.
  */
 public class QwubbleLayerEntity extends Entity {
-    private static final int CAMERA_WIDTH = 480;
-    private static final int CAMERA_HEIGHT = 720;
-
     private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 
 
     private PhysicsWorld mPhysicsWorld;
+    private CameraSize mCameraSize;
     private VertexBufferObjectManager mVertexBufferObjectManager;
     private TextureManager mTextureManager;
     private Scene mScene;
@@ -45,22 +43,23 @@ public class QwubbleLayerEntity extends Entity {
     private int mFaceCount;
 
 
-    public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld) {
+    public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize) {
 
         mVertexBufferObjectManager = vertexBufferObjectManager;
         mTextureManager = textureManager;
         mScene = scene;
         mPhysicsWorld = physicsWorld;
+        mCameraSize = cameraSize;
     }
 
     @Override
     public void onAttached() {
         super.onAttached();
 
-        final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - (2 + MainActivity.BUTTON_HEIGHT), CAMERA_WIDTH, 2, mVertexBufferObjectManager);
-        final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, mVertexBufferObjectManager);
-        final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, mVertexBufferObjectManager);
-        final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, mVertexBufferObjectManager);
+        final Rectangle ground = new Rectangle(0, mCameraSize.getHeight() - (2 + MainActivity.BUTTON_HEIGHT), mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
+        final Rectangle roof = new Rectangle(0, 0, mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
+        final Rectangle left = new Rectangle(0, 0, 2, mCameraSize.getHeight(), mVertexBufferObjectManager);
+        final Rectangle right = new Rectangle(mCameraSize.getWidth() - 2, 0, 2, mCameraSize.getHeight(), mVertexBufferObjectManager);
 
         final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
 
@@ -78,7 +77,7 @@ public class QwubbleLayerEntity extends Entity {
         registerUpdateHandler(this.mPhysicsWorld);
 
         for (int i = 0; i < 8; i++) {
-            int randomX = 0 + (int) (Math.random() * CAMERA_WIDTH);
+            int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth());
             addFace(randomX, 0);
         }
 
