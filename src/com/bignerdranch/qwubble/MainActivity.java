@@ -36,8 +36,8 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.region.TextureRegion;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -71,8 +71,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final String TAG = "MainActivity";
 
     private BitmapTextureAtlas mBitmapTextureAtlas;
-
-    private TiledTextureRegion mCircleFaceTextureRegion;
 
     private Scene mScene;
 
@@ -203,11 +201,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mScene.setOnSceneTouchListener(this);
         this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
 
-        this.getVertexBufferObjectManager();
+        Highlighter highlighter = new Highlighter(this, getTextureManager());
 
         QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld, mCameraSize);
         QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity(mCameraSize);
+        layerEntity.setHighlighter(highlighter);
         layerEntity.setZoomLayer(zoomLayerEntity);
+        zoomLayerEntity.setHighlighter(highlighter);
         mZoomLayer = zoomLayerEntity;
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);

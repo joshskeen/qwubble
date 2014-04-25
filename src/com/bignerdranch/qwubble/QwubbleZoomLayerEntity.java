@@ -12,6 +12,7 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
     private Sprite mNextZoomSprite;
     private ZoomSprite mZoomSprite;
     private CameraSize mCameraSize;
+    private Highlighter mHighlighter;
 
     public QwubbleZoomLayerEntity(CameraSize cameraSize) {
         super();
@@ -60,5 +61,13 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
                 zoomToSprite(sprite);
             }
         }
+    }
+
+    public void setHighlighter(Highlighter highlighter) {
+        mHighlighter = highlighter;
+    }
+
+    public Highlighter getHighlighter() {
+        return mHighlighter;
     }
 }

@@ -40,6 +40,7 @@ public class QwubbleLayerEntity extends Entity {
     private Scene mScene;
     private QwubbleZoomLayerEntity mZoomLayer;
     private int mFaceCount;
+    private Highlighter mHighlighter;
 
 
     public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize) {
@@ -126,6 +127,7 @@ public class QwubbleLayerEntity extends Entity {
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
 
                 attachChild(entity);
+                mHighlighter.addHighlight(entity);
                 mScene.registerTouchArea(entity);
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
 
@@ -147,5 +149,13 @@ public class QwubbleLayerEntity extends Entity {
 
     public void setZoomLayer(QwubbleZoomLayerEntity zoomLayer) {
         mZoomLayer = zoomLayer;
+    }
+
+    public void setHighlighter(Highlighter highlighter) {
+        mHighlighter = highlighter;
+    }
+
+    public Highlighter getHighlighter() {
+        return mHighlighter;
     }
 }
