@@ -130,7 +130,7 @@ public class QwubbleLayerEntity extends Entity {
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
 
-                mScene.attachChild(entity);
+                attachChild(entity);
                 mScene.registerTouchArea(entity);
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
 
