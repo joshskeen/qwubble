@@ -101,6 +101,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Text mAnswerButtonText2;
     private Rectangle mAskButton2;
     private Rectangle mAnswerButton2;
+    public static final int BUTTON_HEIGHT = 150;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -212,37 +213,23 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         this.mScene = new Scene();
         this.mScene.setBackground(new Background(0, 0, 0));
-
         this.mScene.setOnSceneTouchListener(this);
-
         this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
 
-        final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
-        final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-        final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-        final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-        final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
+        this.getVertexBufferObjectManager();
 
-        final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyDef.BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyDef.BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyDef.BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyDef.BodyType.StaticBody, wallFixtureDef);
-
-        this.mScene.attachChild(ground);
-        this.mScene.attachChild(roof);
-        this.mScene.attachChild(left);
-        this.mScene.attachChild(right);
+        QwubbleLayerEntity layerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene, mPhysicsWorld);
+        QwubbleZoomLayerEntity zoomLayerEntity = new QwubbleZoomLayerEntity();
+        layerEntity.setZoomLayer(zoomLayerEntity);
 
         this.mScene.registerUpdateHandler(this.mPhysicsWorld);
 
         setupQwubbles();
 
-        int buttonHeight = 150;
         int buttonWidth = CAMERA_WIDTH / 2;
         int offset = 0;
 
-        mAnswerButton2 = new Rectangle(0, CAMERA_HEIGHT - (buttonHeight + offset), buttonWidth, buttonHeight, vertexBufferObjectManager){
+        mAnswerButton2 = new Rectangle(0, CAMERA_HEIGHT - (BUTTON_HEIGHT + offset), buttonWidth, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 updateQwubbleMode(QwubbleMode.ANSWER);
@@ -250,12 +237,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         };
 
-        mAnswerButtonText2 = new Text( 0 , 40, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
+        mAnswerButtonText2 = new Text(0, 40, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
         mAnswerButton2.setColor(Color.GREEN);
         mAnswerButton2.attachChild(mAnswerButtonText2);
 
-        mAskButton2 = new Rectangle(buttonWidth, CAMERA_HEIGHT - (buttonHeight + offset), (CAMERA_WIDTH / 2) + 1, buttonHeight, vertexBufferObjectManager){
+        mAskButton2 = new Rectangle(buttonWidth, CAMERA_HEIGHT - (BUTTON_HEIGHT + offset), (CAMERA_WIDTH / 2) + 1, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 updateQwubbleMode(QwubbleMode.ASK);
@@ -263,7 +250,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         };
 
-        mAskButtonText2 = new Text( 0, 40, this.mFont, "Ask", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        mAskButtonText2 = new Text(0, 40, this.mFont, "Ask", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
         mAskButtonText2.setAlpha(0.3f);
         mAskButtonText2.setX(mAskButton2.getWidth() / 2 - mAskButtonText2.getWidth() / 2);
         mAskButton2.attachChild(mAskButtonText2);
@@ -275,12 +262,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mScene.registerTouchArea(mAnswerButton2);
         mScene.registerTouchArea(mAskButton2);
 
+        this.mScene.attachChild(layerEntity);
+        this.mScene.attachChild(zoomLayerEntity);
+
         return this.mScene;
     }
 
     private void updateQwubbleMode(QwubbleMode mode) {
         mQwubbleMode = mode;
-        if(mode == QwubbleMode.ANSWER){
+        if (mode == QwubbleMode.ANSWER) {
             mAnswerButtonText2.setAlpha(1.0f);
             mAnswerButton2.setColor(Color.GREEN);
             mAskButtonText2.setAlpha(0.3f);
@@ -294,10 +284,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
     private void setupQwubbles() {
-//        for (int i = 0; i < 8; i++) {
-//            int randomX = 0 + (int) (Math.random() * CAMERA_WIDTH);
-//            addFace(randomX, 0);
-//        }
+        for (int i = 0; i < 8; i++) {
+            int randomX = 0 + (int) (Math.random() * CAMERA_WIDTH);
+            addFace(randomX, 0);
+        }
 
     }
 
@@ -437,7 +427,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     }
 
-    enum QwubbleMode{
+    enum QwubbleMode {
         ANSWER,
         ASK
     }

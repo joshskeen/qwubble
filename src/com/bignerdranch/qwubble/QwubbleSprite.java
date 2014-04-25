@@ -1,6 +1,7 @@
 package com.bignerdranch.qwubble;
 
 import android.util.Log;
+import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.IEntityComparator;
 import org.andengine.entity.modifier.ScaleModifier;
@@ -9,6 +10,9 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
+import org.andengine.util.modifier.ease.EaseBounceIn;
+import org.andengine.util.modifier.ease.EaseBounceOut;
+import org.andengine.util.modifier.ease.IEaseFunction;
 
 /**
 * Created by bphillips on 4/24/14.
@@ -17,6 +21,7 @@ class QwubbleSprite extends Sprite {
     private static final String TAG = "QwubbleSprite";
 
     private boolean mZoomed = false;
+    private QwubbleZoomLayerEntity mZoomLayer;
 
     private long mClickTime = 0;
 
@@ -38,9 +43,11 @@ class QwubbleSprite extends Sprite {
 
             //Display a dialog, overthrow universe
 
+            mZoomLayer.zoomToSprite(this);
+
             Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
 
-            toggleZoom();
+
 
             return true;
         } else {
@@ -55,7 +62,7 @@ class QwubbleSprite extends Sprite {
         float start = getScaleX(), end;
 
         if (mZoomed) {
-            end = 2;
+            end = 4;
         } else {
             end = 1;
         }
@@ -64,7 +71,9 @@ class QwubbleSprite extends Sprite {
             unregisterEntityModifier(mScaleModifier);
         }
 
-        mScaleModifier = new ScaleModifier(1, start, end);
+        final IEaseFunction easeFunction = EaseBounceOut.getInstance();
+
+        mScaleModifier = new ScaleModifier(0.6f, start, end, null, easeFunction);
         mScaleModifier.setAutoUnregisterWhenFinished(true);
         getParent().sortChildren(new IEntityComparator() {
             @Override
@@ -83,4 +92,11 @@ class QwubbleSprite extends Sprite {
         registerEntityModifier(mScaleModifier);
     }
 
+    public QwubbleZoomLayerEntity getZoomLayer() {
+        return mZoomLayer;
+    }
+
+    public void setZoomLayer(QwubbleZoomLayerEntity zoomLayer) {
+        mZoomLayer = zoomLayer;
+    }
 }
