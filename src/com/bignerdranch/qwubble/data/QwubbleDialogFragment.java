@@ -13,11 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.bignerdranch.qwubble.R;
 import com.bignerdranch.qwubble.Util;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -28,20 +33,22 @@ import java.net.URLConnection;
 public class QwubbleDialogFragment extends DialogFragment {
 
     public static final String QWUBBLE_DATA = "QwubbleData";
+    private static final String TAG = "QwubbleDialogFragment";
+    private static String mRegID;
     private TextView mTextView;
     private View mAnswersView;
     private QwubbleData mQwubbleData;
     private ImageView mImageView;
     private View mAnswerQuestionButton;
+    private EditText mAnswerQuestionEditText;
 
-    public static QwubbleDialogFragment newInstance(QwubbleData data) {
-
+    public static QwubbleDialogFragment newInstance(QwubbleData data, String regId) {
         QwubbleDialogFragment qwubbleDialogFragment = new QwubbleDialogFragment();
         Bundle bundle = new Bundle();
+        mRegID = regId;
         bundle.putSerializable(QWUBBLE_DATA, data);
         qwubbleDialogFragment.setArguments(bundle);
         return qwubbleDialogFragment;
-
     }
 
     @Override
@@ -56,6 +63,24 @@ public class QwubbleDialogFragment extends DialogFragment {
         mImageView = (ImageView) view.findViewById(R.id.qwubbleImage);
         mAnswersView = (ListView) view.findViewById(R.id.qwubbleAnswers);
         mAnswerQuestionButton = view.findViewById(R.id.answerQuestionButton);
+        mAnswerQuestionEditText = (EditText) view.findViewById(R.id.mAnswerQuestionEditText);
+        mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QwubbleWebservice.getService().postQuestion(mRegID, mAnswerQuestionEditText.getText().toString(), new Callback<QuestionResponse>() {
+                    @Override
+                    public void success(QuestionResponse questionResponse, Response response) {
+                        mAnswerQuestionEditText.setText("");
+                        dismiss();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+                       Log.d(TAG, "FAILURE");
+                    }
+                });
+            }
+        });
 
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setView(view)
