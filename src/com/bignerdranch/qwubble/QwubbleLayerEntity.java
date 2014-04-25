@@ -121,7 +121,7 @@ public class QwubbleLayerEntity extends Entity {
             @Override
             protected void onPostExecute(TextureRegion textureRegion) {
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
-                QwubbleSprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager());
+                QwubbleSprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager(), qwubble);
                 entity.setZoomLayer(mZoomLayer);
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);

@@ -1,7 +1,7 @@
 package com.bignerdranch.qwubble;
 
 import android.util.Log;
-import com.bignerdranch.qwubble.data.QwubbleData;
+import com.bignerdranch.qwubble.data.IQwubble;
 import de.greenrobot.event.EventBus;
 import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.sprite.Sprite;
@@ -11,21 +11,21 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
 
 /**
-* Created by bphillips on 4/24/14.
-*/
+ * Created by bphillips on 4/24/14.
+ */
 class QwubbleSprite extends Sprite {
     private static final String TAG = "QwubbleSprite";
 
     private boolean mZoomed = false;
     private ZoomLayerEntity mZoomLayer;
 
-    private QwubbleData mQwubble;
+    private IQwubble mQwubble;
 
     private ScaleModifier mScaleModifier;
 
-    public QwubbleSprite(float x, float y, TextureRegion textureRegion, VertexBufferObjectManager vertexBufferObjectManager) {
+    public QwubbleSprite(float x, float y, TextureRegion textureRegion, VertexBufferObjectManager vertexBufferObjectManager, IQwubble qwubble) {
         super(x, y, textureRegion, vertexBufferObjectManager);
-        mQwubble = new QwubbleData();
+        mQwubble = qwubble;
     }
 
     @Override
@@ -33,10 +33,7 @@ class QwubbleSprite extends Sprite {
         if (sceneTouchEvent.isActionDown()) {
             Debug.d("TOUCHED");
             //Display a dialog, overthrow universe
-
             EventBus.getDefault().post(new ShowQwubbleEvent(mQwubble, this));
-
-
             Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
             return true;
         } else {

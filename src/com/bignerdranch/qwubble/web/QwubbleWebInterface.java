@@ -3,7 +3,10 @@ package com.bignerdranch.qwubble.web;
 import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.QuestionData;
 import retrofit.Callback;
-import retrofit.http.*;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
+import retrofit.http.POST;
 
 import java.util.List;
 
@@ -13,8 +16,9 @@ public interface QwubbleWebInterface {
     @FormUrlEncoded
     public void postRegistration(@Field("registration_id") String registrationId, Callback<Void> callback);
 
-    @GET("/answers/{question_id}")
-    public void getAnswers(@Path("question_id") int questionId, Callback<List<AnswerData>> callback);
+    @GET("/answers")
+    @FormUrlEncoded
+    public void getAnswers(@Field("question_id") int questionId, Callback<List<AnswerData>> callback);
 
     @POST("/questions")
     @FormUrlEncoded

@@ -9,7 +9,6 @@ import retrofit.RestAdapter;
 import retrofit.converter.ConversionException;
 import retrofit.converter.GsonConverter;
 import retrofit.http.Field;
-import retrofit.http.Path;
 import retrofit.mime.TypedInput;
 
 import java.lang.reflect.Type;
@@ -48,7 +47,7 @@ public class QwubbleWebservice implements QwubbleWebInterface {
     }
 
     @Override
-    public void getAnswers(@Path("question_id") int questionId, Callback<List<AnswerData>> callback) {
+    public void getAnswers(@Field("question_id") int questionId, Callback<List<AnswerData>> callback) {
         getService().getAnswers(questionId, callback);
     }
 

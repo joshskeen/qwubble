@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.*;
 import com.bignerdranch.qwubble.data.AnswerData;
+import com.bignerdranch.qwubble.data.IQwubble;
 import com.bignerdranch.qwubble.data.QuestionData;
-import com.bignerdranch.qwubble.data.QwubbleData;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import org.andengine.util.debug.Debug;
 import retrofit.Callback;
@@ -35,19 +35,19 @@ public class QwubbleDialogFragment extends DialogFragment {
     public static final String QWUBBLE_DATA = "QwubbleData";
     private static final String TAG = "QwubbleDialogFragment";
     private static String mRegID;
-    private TextView mTextView;
+    private TextView mQuestionText;
     private ListView mAnswersView;
-    private QwubbleData mQwubbleData;
+    private IQwubble mIQwubble;
     private ImageView mImageView;
     private View mAnswerQuestionButton;
     private EditText mAnswerQuestionEditText;
     private TextView noAnswersFound;
 
-    public static QwubbleDialogFragment newInstance(QwubbleData data, String regId) {
+    public static QwubbleDialogFragment newInstance(IQwubble iQwubble, String regId) {
         QwubbleDialogFragment qwubbleDialogFragment = new QwubbleDialogFragment();
         Bundle bundle = new Bundle();
         mRegID = regId;
-        bundle.putSerializable(QWUBBLE_DATA, data);
+        bundle.putSerializable(QWUBBLE_DATA, iQwubble);
         qwubbleDialogFragment.setArguments(bundle);
         return qwubbleDialogFragment;
     }
@@ -62,13 +62,15 @@ public class QwubbleDialogFragment extends DialogFragment {
         loadQwubbleAnswers();
         loadQwubbleImage();
 
-        mTextView = (TextView) view.findViewById(R.id.qwubbleQuestion);
+        mQuestionText = (TextView) view.findViewById(R.id.qwubbleQuestion);
         mImageView = (ImageView) view.findViewById(R.id.qwubbleImage);
         mAnswersView = (ListView) view.findViewById(R.id.qwubbleAnswers);
         mAnswerQuestionButton = view.findViewById(R.id.answerQuestionButton);
         mAnswerQuestionEditText = (EditText) view.findViewById(R.id.mAnswerQuestionEditText);
         noAnswersFound = (TextView) view.findViewById(R.id.noAnswersFound);
         mAnswersView.setEmptyView(noAnswersFound);
+
+        mQuestionText.setText(mIQwubble.getQuestion());
 
         mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +111,7 @@ public class QwubbleDialogFragment extends DialogFragment {
 
             @Override
             protected List<AnswerData> doInBackground(Void... params) {
-                QwubbleWebservice.getService().getAnswers(mQwubbleData.mId, new Callback<List<AnswerData>>() {
+                QwubbleWebservice.getService().getAnswers(mIQwubble.getId(), new Callback<List<AnswerData>>() {
                     @Override
                     public void success(List<AnswerData> answerDatas, Response response) {
                         mAnswerDatas = answerDatas;
@@ -151,7 +153,7 @@ public class QwubbleDialogFragment extends DialogFragment {
 
             @Override
             protected Bitmap doInBackground(Void... params) {
-                return downloadImage(Util.getCloudinaryUrl(mQwubbleData.mUrl, 200));
+                return downloadImage(Util.getCloudinaryUrl(mIQwubble.getImageUrl(), 200));
             }
 
             @Override
@@ -184,7 +186,7 @@ public class QwubbleDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mQwubbleData = (QwubbleData) getArguments().getSerializable(QWUBBLE_DATA);
+        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
     }
 
     @Override

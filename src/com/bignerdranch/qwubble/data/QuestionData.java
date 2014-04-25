@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class QuestionData implements Serializable, IQwubble{
 
     @SerializedName("id")
-    public String id;
+    public int id;
 
     @SerializedName("registration_id")
     public String registrationId;
@@ -31,6 +31,21 @@ public class QuestionData implements Serializable, IQwubble{
     @Override
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    @Override
+    public String getQuestion() {
+        return question;
+    }
+
+    @Override
+    public String getAnswer() {
+        return null;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
 }

@@ -1,13 +1,13 @@
 package com.bignerdranch.qwubble;
 
-import com.bignerdranch.qwubble.data.QwubbleData;
+import com.bignerdranch.qwubble.data.IQwubble;
 
 public class ShowQwubbleEvent {
 
-    public QwubbleData mQwubble;
+    public IQwubble mQwubble;
     public QwubbleSprite mSprite;
 
-    public ShowQwubbleEvent(QwubbleData qwubble, QwubbleSprite sprite) {
+    public ShowQwubbleEvent(IQwubble qwubble, QwubbleSprite sprite) {
         mQwubble = qwubble;
         mSprite = sprite;
     }
