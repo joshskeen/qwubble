@@ -369,6 +369,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
 
     enum QwubbleMode {
         ANSWER,
