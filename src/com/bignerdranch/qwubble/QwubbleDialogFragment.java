@@ -16,7 +16,6 @@ import android.view.Window;
 import android.widget.*;
 import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.IQwubble;
-import com.bignerdranch.qwubble.data.QuestionData;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import org.andengine.util.debug.Debug;
 import retrofit.Callback;
@@ -42,6 +41,7 @@ public class QwubbleDialogFragment extends DialogFragment {
     private View mAnswerQuestionButton;
     private EditText mAnswerQuestionEditText;
     private TextView noAnswersFound;
+    private ArrayAdapter<AnswerData> mAnswerDataArray;
 
     public static QwubbleDialogFragment newInstance(IQwubble iQwubble, String regId) {
         QwubbleDialogFragment qwubbleDialogFragment = new QwubbleDialogFragment();
@@ -75,14 +75,13 @@ public class QwubbleDialogFragment extends DialogFragment {
         mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QwubbleWebservice.getService().postQuestion(mRegID, mAnswerQuestionEditText.getText().toString(), new Callback<QuestionData>() {
+                QwubbleWebservice.getService().postAnswer(mIQwubble.getId(), mRegID, mAnswerQuestionEditText.getText().toString(), new Callback<Void>() {
                     @Override
-                    public void success(QuestionData questionResponse, Response response) {
+                    public void success(Void aVoid, Response response) {
                         mAnswerQuestionEditText.setText("");
                         Toast.makeText(getActivity(), "Answer Posted!", Toast.LENGTH_LONG);
                         dismiss();
                     }
-
                     @Override
                     public void failure(RetrofitError retrofitError) {
                         Log.d(TAG, "FAILURE");
@@ -129,7 +128,7 @@ public class QwubbleDialogFragment extends DialogFragment {
             protected void onPostExecute(final List<AnswerData> answerDatas) {
                 Log.d(TAG, "GOT: " + answerDatas);
                 super.onPostExecute(answerDatas);
-                ArrayAdapter<AnswerData> answerDataArray = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
+                mAnswerDataArray = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
                         if (convertView == null) {
@@ -143,8 +142,9 @@ public class QwubbleDialogFragment extends DialogFragment {
 
                     }
                 };
+                mAnswersView.setAdapter(mAnswerDataArray);
             }
-        };
+        }.execute();
     }
 
     private void loadQwubbleImage() {
