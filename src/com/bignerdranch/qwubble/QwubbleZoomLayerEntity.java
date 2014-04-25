@@ -46,15 +46,22 @@ public class QwubbleZoomLayerEntity extends Entity implements ZoomSprite.OnZoomL
             mZoomSprite.setOnZoomListener(this);
             attachChild(mZoomSprite);
             mZoomSprite.zoomIn();
+            sprite.setVisible(false);
         }
     }
 
     @Override
-    public void onZoomRatioChange(ZoomSprite zoomSprite, float zoomRatio) {
-        if (zoomRatio == 0 && mNextZoomSprite != null) {
-            Sprite sprite = mNextZoomSprite;
-            mNextZoomSprite = null;
-            zoomToSprite(sprite);
+    public void onZoomRatioChange(ZoomSprite zoomSprite, float percentComplete, float zoomRatio) {
+        if (zoomRatio == 0 && percentComplete == 1) {
+            mZoomSprite.getTargetSprite().setVisible(true);
+            mZoomSprite.detachSelf();
+            mZoomSprite = null;
+
+            if (mNextZoomSprite != null) {
+                Sprite sprite = mNextZoomSprite;
+                mNextZoomSprite = null;
+                zoomToSprite(sprite);
+            }
         }
     }
 }

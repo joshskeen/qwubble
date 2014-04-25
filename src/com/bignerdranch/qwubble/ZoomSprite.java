@@ -1,32 +1,10 @@
 package com.bignerdranch.qwubble;
 
-import org.andengine.engine.camera.Camera;
-import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.IEntityComparator;
-import org.andengine.entity.IEntityMatcher;
-import org.andengine.entity.IEntityParameterCallable;
-import org.andengine.entity.modifier.DoubleValueChangeEntityModifier;
-import org.andengine.entity.modifier.EntityModifier;
 import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.SingleValueSpanEntityModifier;
-import org.andengine.entity.shape.IShape;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.sprite.vbo.ISpriteVertexBufferObject;
-import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.shader.ShaderProgram;
-import org.andengine.opengl.texture.ITexture;
-import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.util.GLState;
-import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.adt.transformation.Transformation;
-import org.andengine.util.color.Color;
-import org.andengine.util.modifier.IModifier;
 import org.andengine.util.modifier.ease.EaseBounceOut;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ZoomSprite extends Sprite {
     public OnZoomListener getOnZoomListener() {
@@ -38,14 +16,19 @@ public class ZoomSprite extends Sprite {
     }
 
     public interface OnZoomListener {
-        public void onZoomRatioChange(ZoomSprite zoomSprite, float zoomRatio);
+        public void onZoomRatioChange(ZoomSprite zoomSprite, float percentComplete, float zoomRatio);
     }
 
     private final float mZoomX;
     private final float mZoomY;
     private float mZoomRatio = 0;
     private float mZoomScale;
-    private Sprite mTargetSprite;
+
+    public Sprite getTargetSprite() {
+        return mTargetSprite;
+    }
+
+    private final Sprite mTargetSprite;
     private OnZoomListener mOnZoomListener;
 
     IEntityModifier mZoomModifier;
@@ -82,6 +65,10 @@ public class ZoomSprite extends Sprite {
             @Override
             protected void onSetValue(IEntity pItem, float pPercentageDone, float pValue) {
                 setZoomRatio(pValue);
+                if (mOnZoomListener != null) {
+                    mOnZoomListener.onZoomRatioChange(ZoomSprite.this, pPercentageDone, mZoomRatio);
+                }
+
             }
 
             @Override
@@ -103,9 +90,6 @@ public class ZoomSprite extends Sprite {
 
         updateZoomPosition();
 
-        if (mOnZoomListener != null) {
-            mOnZoomListener.onZoomRatioChange(this, mZoomRatio);
-        }
     }
 
     private void updateZoomPosition() {
