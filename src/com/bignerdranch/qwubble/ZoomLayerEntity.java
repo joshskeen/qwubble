@@ -25,6 +25,12 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
         super.onAttached();
     }
 
+    public void zoomOut() {
+        if (mZoomSprite != null) {
+            mZoomSprite.zoomOut();
+        }
+    }
+
     public void zoomToSprite(Sprite sprite) {
         if (mZoomSprite != null && mZoomSprite.getZoomRatio() != 0) {
             mNextZoomSprite = sprite;
