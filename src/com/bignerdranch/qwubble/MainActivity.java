@@ -1,6 +1,7 @@
 package com.bignerdranch.qwubble;
 
 import android.content.*;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -70,7 +71,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final int REQUEST_SHOW_ANSWER = 5;
     private static final int REQUEST_SHOW_QUESTION = 10;
     String SENDER_ID = "735653081262";
-    public static final int QWUBBLE_WIDTH = 175;
+    public static final int QWUBBLE_WIDTH = 100;
     private LayerEntity mActiveLayer;
 
     public static final int getQwubbleWidth() {
@@ -115,6 +116,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Rectangle mAddQuestionButton;
     private Text mAddQuestionText;
     public static float DENSITY;
+    public static float ZOOMED_SIZE;
+    public static float ZOOMED_CENTER_X;
+    public static float ZOOMED_CENTER_Y;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -123,8 +127,18 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         DENSITY = metrics.density;
 
+        // calculate where the dialog images will go
+        int imageWidthDp = 125;
+        float imageWidthPx = DENSITY * imageWidthDp;
+        int imageTopGapDp = 12;
+        float imageTopGapPx = DENSITY * imageTopGapDp;
+
         int widthPixels = metrics.widthPixels;
         int heightPixels = metrics.heightPixels;
+
+        ZOOMED_SIZE = imageWidthPx;
+        ZOOMED_CENTER_X = widthPixels / 2;
+        ZOOMED_CENTER_Y = imageTopGapPx + imageWidthPx / 2;
 
         CameraSize size = new CameraSize(widthPixels, heightPixels);
         mCameraSize = size;
@@ -269,6 +283,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         selectLayer(mQwubbleLayerEntity);
         zoomLayerEntity.setHighlighter(highlighter);
         mZoomLayer = zoomLayerEntity;
+        mZoomLayer.setZoomSpriteWidth(ZOOMED_SIZE);
+        mZoomLayer.setZoomSpriteX(ZOOMED_CENTER_X);
+        mZoomLayer.setZoomSpriteY(ZOOMED_CENTER_Y);
 
         int buttonWidth = mCameraSize.getWidth() / 2;
         int offset = 0;
