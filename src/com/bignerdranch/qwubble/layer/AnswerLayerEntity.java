@@ -44,10 +44,9 @@ public class AnswerLayerEntity extends LayerEntity {
     }
 
     public void addAnswer(AnswerData answerData, MainActivity.QwubbleMode qwubbleMode) {
-        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
+        int randomX = MainActivity.QWUBBLE_WIDTH + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
         addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, answerData, qwubbleMode);
     }
-
 
     private void addQwubble(final float x, final float y, final IQwubble qwubble, final MainActivity.QwubbleMode qwubbleMode) {
         this.qwubbleCount++;
