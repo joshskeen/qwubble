@@ -1,8 +1,12 @@
-package com.bignerdranch.qwubble;
+package com.bignerdranch.qwubble.layer;
 
 import android.os.AsyncTask;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.bignerdranch.qwubble.CameraSize;
+import com.bignerdranch.qwubble.MainActivity;
+import com.bignerdranch.qwubble.QwubbleSprite;
+import com.bignerdranch.qwubble.Util;
 import com.bignerdranch.qwubble.data.IQwubble;
 import com.bignerdranch.qwubble.data.QuestionData;
 import org.andengine.entity.scene.Scene;
@@ -28,6 +32,9 @@ import java.net.URL;
 /**
  * Created by bphillips on 4/24/14.
  */
+
+//THE LAYER FOR THE "ANSWER" TAB
+
 public class QwubbleLayerEntity extends LayerEntity{
 
     public static final MainActivity.QwubbleMode LAYER_MODE = MainActivity.QwubbleMode.ANSWER;

@@ -114,7 +114,7 @@ public class QwubbleDialogFragment extends DialogFragment {
                     @Override
                     public void success(Void aVoid, Response response) {
                         mAnswerQuestionEditText.setText("");
-                        Toast.makeText(getActivity(), "Answer Posted!", Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), "Answer Posted!", Toast.LENGTH_LONG).show();
                         dismiss();
                     }
 

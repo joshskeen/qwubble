@@ -1,7 +1,8 @@
-package com.bignerdranch.qwubble;
+package com.bignerdranch.qwubble.layer;
 
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.bignerdranch.qwubble.*;
 import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
