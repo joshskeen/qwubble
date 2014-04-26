@@ -1,7 +1,6 @@
 package com.bignerdranch.qwubble;
 
 import android.content.*;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -33,7 +32,6 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
