@@ -67,6 +67,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    private static final int REQUEST_SHOW_ANSWER = 5;
+    private static final int REQUEST_SHOW_QUESTION = 10;
     String SENDER_ID = "735653081262";
     public static final int QWUBBLE_WIDTH = 150;
 
@@ -226,7 +228,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         setupPlayServices();
 
-        EventBus.getDefault().register(this);
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
         this.mScene = new Scene();
@@ -426,10 +427,19 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         Vector2Pool.recycle(gravity);
     }
 
+    private boolean isResumed = false;
     @Override
     public void onResumeGame() {
         super.onResumeGame();
+
+        if (isResumed) {
+            return;
+        }
+        isResumed = true;
+
         this.enableAccelerationSensor(this);
+        EventBus.getDefault().register(this);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.google.android.c2dm.intent.RECEIVE");
         filter.addCategory("com.bignerdranch.qwubble");
@@ -445,6 +455,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.disableAccelerationSensor();
         Log.d(TAG, "UNREGISTER RECEIVER");
         unregisterReceiver(mGCMBroadcastReceiver);
+        isResumed = false;
     }
 
     public void onEvent(final ZoomOutEvent event) {
@@ -458,7 +469,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             @Override
             public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
                 Intent i = QwubbleDialogActivity.getIntent(MainActivity.this, regid, event.mQwubble);
-                startActivity(i);
+                int code;
+                
+                if (event.mQwubble instanceof AnswerData) {
+                    code = REQUEST_SHOW_ANSWER;
+                } else {
+                    code = REQUEST_SHOW_QUESTION;
+                }
+                startActivityForResult(i, code);
                 //QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
             }
         });
@@ -466,7 +484,16 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        switch (requestCode) {
+            case REQUEST_SHOW_ANSWER:
+                selectLayer(mAnswerLayerEntity);
+                break;
+            case REQUEST_SHOW_QUESTION:
+                selectLayer(mQwubbleLayerEntity);
+                break;
+        }
+        mZoomLayer.zoomOut();
+        
     }
 
     public enum QwubbleMode {
