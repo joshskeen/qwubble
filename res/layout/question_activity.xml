@@ -3,6 +3,8 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
+              android:background="#ee000000"
+
         >
 <View
         android:layout_width="0dp"
@@ -78,6 +80,7 @@
             android:hint="Enter your answer here"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:textColor="@android:color/white"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             />
@@ -90,8 +93,9 @@
             android:id="@+id/answerQuestionButton"
             android:layout_height="wrap_content"/>
     <View
-            android:layout_width="0dp"
-            android:layout_height="48dp" />
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            />
 
 </LinearLayout>
 
