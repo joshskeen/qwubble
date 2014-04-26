@@ -108,7 +108,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Text mAnswerButtonText2;
     private Rectangle mAskButton2;
     private Rectangle mAnswerButton2;
-    public static final int BUTTON_HEIGHT = 50;
+    public static final int BUTTON_HEIGHT = 100;
 
     private QwubbleLayerEntity mQwubbleLayerEntity;
     private AnswerLayerEntity mAnswerLayerEntity;

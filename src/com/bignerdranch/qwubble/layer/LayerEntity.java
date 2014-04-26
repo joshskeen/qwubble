@@ -80,7 +80,7 @@ public abstract class LayerEntity extends Entity {
     }
 
     protected void setupPhysicsBoundaries() {
-        final Rectangle ground = new Rectangle(0, mCameraSize.getHeight() - (2 + MainActivity.getButtonHeight()), mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
+        final Rectangle ground = new Rectangle(0, mCameraSize.getHeight() - (2 + MainActivity.BUTTON_HEIGHT), mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
         final Rectangle roof = new Rectangle(0, 0, mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
         final Rectangle left = new Rectangle(0, 0, 2, mCameraSize.getHeight(), mVertexBufferObjectManager);
         final Rectangle right = new Rectangle(mCameraSize.getWidth() - 2, 0, 2, mCameraSize.getHeight(), mVertexBufferObjectManager);
