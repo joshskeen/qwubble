@@ -8,15 +8,16 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
  * Created by bphillips on 4/25/14.
  */
 public class HighlightSprite extends Sprite {
+    private static final float PAD = 4f;
 
     private final Sprite mHighlightTarget;
 
     public HighlightSprite(Sprite highlightTarget, ITextureRegion textureRegion, VertexBufferObjectManager vertexBufferObjectManager) {
-        super(-1, -1, textureRegion, vertexBufferObjectManager);
+        super(-PAD, -PAD, textureRegion, vertexBufferObjectManager);
         mHighlightTarget = highlightTarget;
 
-        setWidth(highlightTarget.getWidth() + 2);
-        setHeight(highlightTarget.getHeight() + 2);
+        setWidth(highlightTarget.getWidth() + PAD * 2);
+        setHeight(highlightTarget.getHeight() + PAD * 2);
 
         setRotationCenter(getHeight() / 2, getWidth() / 2);
     }
