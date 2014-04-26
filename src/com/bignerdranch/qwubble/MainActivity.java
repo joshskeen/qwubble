@@ -1,7 +1,6 @@
 package com.bignerdranch.qwubble;
 
 import android.content.*;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -33,7 +32,6 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -230,7 +228,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     @Override
     public Scene onCreateScene() {
-
         mGCMBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -247,7 +244,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                     }
                 } else if (type.equals("answer_creation_notification")) {
                     GCMAnswerResponse response = gson.fromJson(data, GCMAnswerResponse.class);
-                    Crouton.makeText(MainActivity.this, response.mAnswerData.getAnswer() + " : " + response.mAnswerData.getAnswer(), Style.CONFIRM).show();
+                    Crouton.makeText(MainActivity.this, response.mAnswerData.getQuestion() + " : " + response.mAnswerData.getAnswer(), Style.CONFIRM).show();
                     mAnswerLayerEntity.addAnswer(response.mAnswerData, mActiveLayer);
                     Debug.d(TAG, "!!!!!!!");
                 } else {
