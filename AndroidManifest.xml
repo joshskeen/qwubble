@@ -9,7 +9,7 @@
             android:targetSdkVersion="19"/>
     <application
             android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher">
+            android:icon="@drawable/varying_qubbles">
         <activity
                 android:name=".SplashActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
