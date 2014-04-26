@@ -1,5 +1,7 @@
 package com.bignerdranch.qwubble.layer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,6 +26,8 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -57,11 +61,14 @@ public class QwubbleLayerEntity extends LayerEntity{
 
         new AsyncTask<Void, Void, TextureRegion>() {
             TextureRegion imageFromWebservice;
+            public Bitmap mBitmap;
 
             @Override
             protected TextureRegion doInBackground(Void... params) {
                 try {
-                    ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
+                    BitmapTexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
+
+
                         @Override
                         public InputStream open() throws IOException {
                             Random rand = new Random();
@@ -70,12 +77,25 @@ public class QwubbleLayerEntity extends LayerEntity{
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
+
                             InputStream input = connection.getInputStream();
-                            BufferedInputStream in = new BufferedInputStream(input);
-                            return in;
+
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+                            int data;
+                            while ((data = input.read()) != -1) {
+                                byteArrayOutputStream.write(data);
+                            }
+
+                            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+                            mBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+                            return new ByteArrayInputStream(byteArray);
                         }
                     });
                     mTexture.load();
+
                     imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
 
                 } catch (IOException e) {
@@ -89,6 +109,7 @@ public class QwubbleLayerEntity extends LayerEntity{
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
                 QwubbleSprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager(), qwubble);
                 entity.setZoomLayer(mZoomLayer);
+                entity.setBitmap(mBitmap);
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
 
