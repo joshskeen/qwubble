@@ -1,8 +1,12 @@
-package com.bignerdranch.qwubble;
+package com.bignerdranch.qwubble.layer;
 
 import android.os.AsyncTask;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.bignerdranch.qwubble.CameraSize;
+import com.bignerdranch.qwubble.MainActivity;
+import com.bignerdranch.qwubble.QwubbleSprite;
+import com.bignerdranch.qwubble.Util;
 import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.IQwubble;
 import org.andengine.entity.scene.Scene;
@@ -28,6 +32,9 @@ import java.net.URL;
 /**
  * Created by bphillips on 4/24/14.
  */
+
+//THE LAYER FOR THE "ASK" TAB
+
 public class AnswerLayerEntity extends LayerEntity {
 
     public static final MainActivity.QwubbleMode LAYER_MODE = MainActivity.QwubbleMode.ASK;
@@ -40,6 +47,7 @@ public class AnswerLayerEntity extends LayerEntity {
         int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
         addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, answerData, qwubbleMode);
     }
+
 
     private void addQwubble(final float x, final float y, final IQwubble qwubble, final MainActivity.QwubbleMode qwubbleMode) {
         this.qwubbleCount++;

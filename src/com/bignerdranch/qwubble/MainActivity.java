@@ -13,6 +13,9 @@ import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import com.bignerdranch.qwubble.event.ZoomOutEvent;
+import com.bignerdranch.qwubble.layer.AnswerLayerEntity;
+import com.bignerdranch.qwubble.layer.LayerEntity;
+import com.bignerdranch.qwubble.layer.QwubbleLayerEntity;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -100,6 +103,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     private List<LayerEntity> mLayers = new ArrayList<LayerEntity>();
     private List<PhysicsWorld> mPhysicsWorlds = new ArrayList<PhysicsWorld>();
+    private Rectangle mAddQuestionButton;
+    private Text mAddQuestionText;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -263,6 +268,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mAnswerButtonText2 = new Text(0, 18, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
         mAnswerButton2.setColor(Color.GREEN);
+
         mAnswerButton2.attachChild(mAnswerButtonText2);
 
         mAskButton2 = new Rectangle(buttonWidth, mCameraSize.getHeight() - (BUTTON_HEIGHT + offset), (mCameraSize.getWidth() / 2) + 1, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
@@ -287,10 +293,28 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mScene.attachChild(mQwubbleLayerEntity);
         this.mScene.attachChild(mAnswerLayerEntity);
 
+        int buttonPadding = 40;
+
+        mAddQuestionButton = new Rectangle(buttonPadding, 80, mCameraSize.getWidth() - (buttonPadding * 2), BUTTON_HEIGHT, getVertexBufferObjectManager()) {
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if (pSceneTouchEvent.isActionDown()) {
+                    AskQuestionDialogFragment.newInstance(regid).show(getFragmentManager(), "ASK_QUESTION_DIALOG");
+                    return true;
+                }
+                return true;
+            }
+        };
+
+        mAddQuestionText = new Text(0, 20, this.mFont, "Ask A Question..", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        mAddQuestionButton.attachChild(mAddQuestionText);
+        mAddQuestionButton.setColor(Color.GREEN);
+
+        mAnswerLayerEntity.attachChild(mAddQuestionButton);
+        mAddQuestionText.setX(mAddQuestionButton.getWidth() / 2 - mAddQuestionText.getWidth() / 2);
         this.mScene.attachChild(zoomLayerEntity);
 
         updateQwubbleMode(mQwubbleMode);
-
         return this.mScene;
     }
 
@@ -320,12 +344,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             mAskButtonText2.setAlpha(0.3f);
             mAskButton2.setColor(Color.WHITE);
             selectLayer(mQwubbleLayerEntity);
+            mScene.unregisterTouchArea(mAddQuestionButton);
         } else {
             mAnswerButtonText2.setAlpha(0.3f);
             mAnswerButton2.setColor(Color.WHITE);
             mAskButtonText2.setAlpha(1.0f);
             mAskButton2.setColor(Color.GREEN);
             selectLayer(mAnswerLayerEntity);
+            mScene.registerTouchArea(mAddQuestionButton);
         }
     }
 
@@ -362,8 +388,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             Log.d(TAG, "REGID was " + regid);
             if (regid.isEmpty()) {
                 Log.d(TAG, "REGID was empty");
-                registerInBackground();
             }
+            registerInBackground();
         } else {
             Log.d(TAG, "SETUP PLAY SERVICES FAILED!!!!!!");
         }
@@ -430,7 +456,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     }
 
-    enum QwubbleMode {
+    public enum QwubbleMode {
         ANSWER,
         ASK
     }
