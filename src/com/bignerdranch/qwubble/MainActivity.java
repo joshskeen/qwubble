@@ -98,7 +98,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private QwubbleLayerEntity mQwubbleLayerEntity;
     private AnswerLayerEntity mAnswerLayerEntity;
 
-    private List<Entity> mLayers = new ArrayList<Entity>();
+    private List<LayerEntity> mLayers = new ArrayList<LayerEntity>();
     private List<PhysicsWorld> mPhysicsWorlds = new ArrayList<PhysicsWorld>();
 
     @Override
@@ -295,9 +295,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
     private void selectLayer(Entity entity) {
-        for (Entity layer : mLayers) {
-            layer.setVisible(layer == entity);
-            mScene.unregisterTouchArea(layer);
+        for (LayerEntity layer : mLayers) {
+            if (layer == entity) {
+                layer.setVisible(true);
+                layer.enableTouchChildSprites();
+            } else {
+                layer.setVisible(false);
+                layer.disableTouchChildSprites();
+            }
         }
     }
 
@@ -305,16 +310,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         PhysicsWorld world = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
         mPhysicsWorlds.add(world);
         return world;
-    }
-
-    private void updateModeLayerTouchRegistration() {
-        if (mQwubbleMode == QwubbleMode.ANSWER) {
-            mQwubbleLayerEntity.enableTouchChildSprites();
-            mAnswerLayerEntity.disableTouchChildSprites();
-        } else {
-            mAnswerLayerEntity.enableTouchChildSprites();
-            mQwubbleLayerEntity.disableTouchChildSprites();
-        }
     }
 
     private void updateQwubbleMode(QwubbleMode mode) {
@@ -332,7 +327,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             mAskButton2.setColor(Color.GREEN);
             selectLayer(mAnswerLayerEntity);
         }
-        updateModeLayerTouchRegistration();
     }
 
     private SharedPreferences getGCMPreferences(Context context) {
