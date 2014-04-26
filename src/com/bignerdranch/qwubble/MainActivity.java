@@ -241,6 +241,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData, mActiveLayer);
                     mAnswerLayerEntity.addAnswer(new AnswerData(), mActiveLayer);
+                    selectLayer(mActiveLayer);
                 } else if (type.equals("answer_creation_notification")) {
 
                 } else {
@@ -510,7 +511,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 //                    code = REQUEST_SHOW_QUESTION;
 //                }
 //                startActivityForResult(i, code);
-                QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+                QwubbleDialogFragment.newInstance(event.mQwubble, regid, event.mSprite.getBitmap()).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
             }
         });
     }

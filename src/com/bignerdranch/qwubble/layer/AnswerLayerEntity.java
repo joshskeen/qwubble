@@ -87,7 +87,11 @@ public class AnswerLayerEntity extends LayerEntity {
 
                             byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-                            mBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            try {
+                                mBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            } catch (Exception e) {
+                                // ignore - if we can't do it, fine
+                            }
 
                             return new ByteArrayInputStream(byteArray);
                         }
@@ -111,9 +115,6 @@ public class AnswerLayerEntity extends LayerEntity {
 
                 attachChild(entity);
                 mHighlighter.addHighlight(entity);
-                if (activeLayer == AnswerLayerEntity.this) {
-//                    mScene.registerTouchArea(entity);
-                }
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);
             }
