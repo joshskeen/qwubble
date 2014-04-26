@@ -2,6 +2,7 @@ package com.bignerdranch.qwubble;
 
 import android.graphics.Bitmap;
 import android.util.Log;
+import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.IQwubble;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import de.greenrobot.event.EventBus;
@@ -34,10 +35,17 @@ public class QwubbleSprite extends Sprite {
     @Override
     public boolean onAreaTouched(TouchEvent sceneTouchEvent, float touchAreaLocalX, float touchAreaLocalY) {
         if (sceneTouchEvent.isActionDown()) {
-            Debug.d("TOUCHED");
-            //Display a dialog, overthrow universe
-            EventBus.getDefault().post(new ShowQwubbleEvent(mQwubble, this));
-            Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
+
+            if (mQwubble instanceof AnswerData) {
+                //answer
+                EventBus.getDefault().post(new ShowAnswerEvent(mQwubble, this));
+            } else {
+                //question
+                Debug.d("TOUCHED");
+                //Display a dialog, overthrow universe
+                EventBus.getDefault().post(new ShowQwubbleEvent(mQwubble, this));
+                Log.i(TAG, "sceneTouchEvent: " + sceneTouchEvent);
+            }
             return true;
         } else {
             Debug.d("TOUCHED..sorta. " + sceneTouchEvent);
