@@ -314,7 +314,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         Log.i(TAG, "ZOOM BUTTON 2 WIDTH: " + mAnswerButton2.getWidth());
 
-        mAnswerButtonText2 = new Text(0, 18, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
+        final int buttonTextSize = 3;
+        mAnswerButtonText2 = new Text(0, PTS(buttonTextSize), this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
         mAnswerButton2.setColor(ACCENT_COLOR);
 
@@ -328,7 +329,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         };
 
-        mAskButtonText2 = new Text(0, 18, this.mFont, "Ask", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        mAskButtonText2 = new Text(0, PTS(buttonTextSize), this.mFont, "Ask", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
         mAskButtonText2.setAlpha(0.3f);
         mAskButtonText2.setX(mAskButton2.getWidth() / 2 - mAskButtonText2.getWidth() / 2);
         mAskButton2.attachChild(mAskButtonText2);
@@ -355,7 +356,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         };
 
-        mAddQuestionText = new Text(0, 20, this.mFont, "Ask A Question..", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        mAddQuestionText = new Text(0, PTS(10), this.mFont, "Ask A Question..", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
         mAddQuestionButton.attachChild(mAddQuestionText);
         mAddQuestionButton.setColor(ACCENT_COLOR);
 
@@ -365,6 +366,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         updateQwubbleMode(mQwubbleMode);
         return this.mScene;
+    }
+
+    public static float PTS(int i) {
+        return i * DENSITY;
     }
 
     private void addDebugQuestions() {
