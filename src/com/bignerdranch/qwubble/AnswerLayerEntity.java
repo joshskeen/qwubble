@@ -44,7 +44,7 @@ public class AnswerLayerEntity extends Entity {
     private Highlighter mHighlighter;
 
 
-    public AnswerLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize) {
+    public AnswerLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
 
         mVertexBufferObjectManager = vertexBufferObjectManager;
         mTextureManager = textureManager;

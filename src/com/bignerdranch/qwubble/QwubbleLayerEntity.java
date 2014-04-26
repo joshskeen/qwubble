@@ -44,7 +44,7 @@ public class QwubbleLayerEntity extends Entity {
     private Highlighter mHighlighter;
 
 
-    public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize) {
+    public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
 
         mVertexBufferObjectManager = vertexBufferObjectManager;
         mTextureManager = textureManager;
@@ -75,7 +75,6 @@ public class QwubbleLayerEntity extends Entity {
         attachChild(right);
 
         registerUpdateHandler(this.mPhysicsWorld);
-
     }
 
     public void addQuestion(QuestionData questionData) {

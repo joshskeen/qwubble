@@ -157,6 +157,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             public void success(Void aVoid, Response response) {
                 Log.d(TAG, "Success");
             }
+
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.d(TAG, "Failure");
@@ -229,9 +230,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         Highlighter highlighter = new Highlighter(this, getTextureManager());
 
         mQwubbleLayerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene,
-                newPhysicsWorld(), mCameraSize);
+                newPhysicsWorld(), mCameraSize, this);
         mAnswerLayerEntity = new AnswerLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene,
-                newPhysicsWorld(), mCameraSize);
+                newPhysicsWorld(), mCameraSize, this);
 
         ZoomLayerEntity zoomLayerEntity = new ZoomLayerEntity(mCameraSize, highlighter);
 
@@ -298,12 +299,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     private PhysicsWorld newPhysicsWorld() {
         PhysicsWorld world = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
-
         mPhysicsWorlds.add(world);
-
         return world;
     }
-
 
     private void updateQwubbleMode(QwubbleMode mode) {
         mQwubbleMode = mode;
@@ -376,11 +374,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     @Override
     public void onAccelerationChanged(final AccelerationData accelerationData) {
         final Vector2 gravity = Vector2Pool.obtain(accelerationData.getX(), accelerationData.getY());
-
         for (PhysicsWorld world : mPhysicsWorlds) {
             world.setGravity(gravity);
         }
-
         Vector2Pool.recycle(gravity);
     }
 
@@ -401,10 +397,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         super.onPauseGame();
         EventBus.getDefault().unregister(this);
         this.disableAccelerationSensor();
+        Log.d(TAG, "UNREGISTER RECEIVER");
         unregisterReceiver(mGCMBroadcastReceiver);
     }
 
-    public void onEvent(final ZoomOutEvent event){
+    public void onEvent(final ZoomOutEvent event) {
         mZoomLayer.zoomOut();
     }
 

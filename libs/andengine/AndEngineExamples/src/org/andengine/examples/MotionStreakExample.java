@@ -97,7 +97,7 @@ public class MotionStreakExample extends SimpleBaseGameActivity implements IOnSc
 					/* Draw current frame. */
 					super.onDrawFrame(pGLState);
 
-					/* Draw previous frame with reduced alpha. */
+					/* Draw previous frame with reduced fade_in_dialog. */
 					if(!firstFrame) {
 						if(MotionStreakExample.this.mMotionStreaking) {
 							this.mRenderTextureSprites[otherRenderTextureIndex].setAlpha(0.9f);
@@ -107,7 +107,7 @@ public class MotionStreakExample extends SimpleBaseGameActivity implements IOnSc
 				}
 				this.mRenderTextures[currentRenderTextureIndex].end(pGLState);
 
-				/* Draw combined frame with full alpha. */
+				/* Draw combined frame with full fade_in_dialog. */
 				{
 					pGLState.pushProjectionGLMatrix();
 					pGLState.orthoProjectionGLMatrixf(0, surfaceWidth, 0, surfaceHeight, -1, 1);
