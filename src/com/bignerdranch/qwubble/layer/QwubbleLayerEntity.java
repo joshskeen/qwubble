@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Random;
 
 /**
  * Created by bphillips on 4/24/14.
@@ -65,7 +66,9 @@ public class QwubbleLayerEntity extends LayerEntity{
                     ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                         @Override
                         public InputStream open() throws IOException {
-                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl()));
+                            Random rand = new Random();
+                            int randomMod = rand.nextInt(100) + 1;
+                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.QWUBBLE_WIDTH - randomMod));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
