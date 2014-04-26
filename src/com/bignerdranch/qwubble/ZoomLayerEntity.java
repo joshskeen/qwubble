@@ -28,6 +28,9 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
     private CameraSize mCameraSize;
     private Highlighter mHighlighter;
     private ZoomListener mZoomListener;
+    private float mZoomSpriteWidth = 400;
+    private float mZoomSpriteX = 200;
+    private float mZoomSpriteY = 200;
 
     public ZoomLayerEntity(CameraSize cameraSize, Highlighter highlighter) {
         super();
@@ -59,13 +62,13 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
             mZoomData = zoomData;
 
             float[] center = new float[] {
-                    mCameraSize.getWidth() / 2,
-                    mCameraSize.getHeight() / 2,
+                    mZoomSpriteX,
+                    mZoomSpriteY,
             };
 
             Log.i(TAG, "Center coords: " + center[0] + ", " + center[1]);
 
-            mZoomSprite = new ZoomSprite(center[0], center[1], 4, sprite);
+            mZoomSprite = new ZoomSprite(center[0], center[1], 500, sprite);
             mZoomSprite.setOnZoomListener(this);
             attachChild(mZoomSprite);
             mHighlighter.addHighlight(mZoomSprite);
@@ -102,5 +105,29 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
 
     public Highlighter getHighlighter() {
         return mHighlighter;
+    }
+
+    public float getZoomSpriteWidth() {
+        return mZoomSpriteWidth;
+    }
+
+    public void setZoomSpriteWidth(float zoomSpriteWidth) {
+        mZoomSpriteWidth = zoomSpriteWidth;
+    }
+
+    public float getZoomSpriteX() {
+        return mZoomSpriteX;
+    }
+
+    public void setZoomSpriteX(float zoomSpriteX) {
+        mZoomSpriteX = zoomSpriteX;
+    }
+
+    public float getZoomSpriteY() {
+        return mZoomSpriteY;
+    }
+
+    public void setZoomSpriteY(float zoomSpriteY) {
+        mZoomSpriteY = zoomSpriteY;
     }
 }

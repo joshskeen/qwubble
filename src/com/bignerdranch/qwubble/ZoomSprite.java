@@ -33,11 +33,11 @@ public class ZoomSprite extends Sprite {
 
     IEntityModifier mZoomModifier;
 
-    public ZoomSprite(float zoomX, float zoomY, float zoomScale, Sprite targetSprite) {
+    public ZoomSprite(float zoomX, float zoomY, float zoomWidth, Sprite targetSprite) {
         super(targetSprite.getX(), targetSprite.getY(), targetSprite.getTextureRegion(), targetSprite.getVertexBufferObjectManager());
         mZoomX = zoomX;
         mZoomY = zoomY;
-        mZoomScale = zoomScale;
+        mZoomScale = zoomWidth / targetSprite.getWidth();
         mTargetSprite = targetSprite;
         setRotation(targetSprite.getRotation());
     }
