@@ -74,7 +74,7 @@ public class QwubbleDialogFragment extends DialogFragment {
         mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
         View view = i.inflate(R.layout.qwubble_dialog_fragment, null);
 
-//        loadQwubbleAnswers();
+        loadQwubbleAnswers();
         loadQwubbleImage();
 
         mQuestionText = (TextView) view.findViewById(R.id.qwubbleQuestion);
@@ -85,7 +85,7 @@ public class QwubbleDialogFragment extends DialogFragment {
         noAnswersFound = (TextView) view.findViewById(R.id.noAnswersFound);
         mAnswersView.setEmptyView(noAnswersFound);
 
-        if(mIQwubble.getQuestion() == null){
+        if (mIQwubble.getQuestion() == null) {
             System.out.println(mIQwubble);
             System.out.println(mIQwubble);
         }
@@ -102,6 +102,7 @@ public class QwubbleDialogFragment extends DialogFragment {
                         Toast.makeText(getActivity(), "Answer Posted!", Toast.LENGTH_LONG);
                         dismiss();
                     }
+
                     @Override
                     public void failure(RetrofitError retrofitError) {
                         Log.d(TAG, "FAILURE");
@@ -126,46 +127,33 @@ public class QwubbleDialogFragment extends DialogFragment {
 
     //get the qwubble answers, and display them in the list
     private void loadQwubbleAnswers() {
-        new AsyncTask<Void, Void, List<AnswerData>>() {
-            List<AnswerData> mAnswerDatas;
 
+        QwubbleWebservice.getService().getAnswers(mIQwubble.getId(), new Callback<List<AnswerData>>() {
             @Override
-            protected List<AnswerData> doInBackground(Void... params) {
-                QwubbleWebservice.getService().getAnswers(mIQwubble.getId(), new Callback<List<AnswerData>>() {
-                    @Override
-                    public void success(List<AnswerData> answerDatas, Response response) {
-                        mAnswerDatas = answerDatas;
-                    }
-
-                    @Override
-                    public void failure(RetrofitError retrofitError) {
-                        Debug.e(TAG, "OH NO!!!! - retrgoit error: " + retrofitError.getCause());
-                    }
-                });
-                return mAnswerDatas;
+            public void success(List<AnswerData> answerDatas, Response response) {
+                if (answerDatas != null && answerDatas.size() > 0) {
+                    ArrayAdapter<AnswerData> arrayAdapter = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            if (convertView == null) {
+                                LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+                                convertView = layoutInflater.inflate(R.layout.answer_item, parent, false);
+                            }
+                            TextView answerText = (TextView) convertView.findViewById(R.id.mAnswerDisplayTV);
+                            answerText.setText(getItem(position).answer);
+                            return convertView;
+                        }
+                    };
+                    mAnswersView.setAdapter(arrayAdapter);
+                }
             }
 
             @Override
-            protected void onPostExecute(final List<AnswerData> answerDatas) {
-//                Log.d(TAG, "GOT: " + answerDatas);
-//                super.onPostExecute(answerDatas);
-//                mAnswerDataArray = new ArrayAdapter<AnswerData>(getActivity(), R.layout.answer_item, answerDatas) {
-//                    @Override
-//                    public View getView(int position, View convertView, ViewGroup parent) {
-//                        if (convertView == null) {
-//                            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-//                            View inflate = layoutInflater.inflate(R.layout.answer_item, parent, false);
-//                            TextView answerText = (TextView) inflate.findViewById(R.id.mAnswerDisplayTV);
-//                            answerText.setText(getItem(position).answer);
-//                            return inflate;
-//                        }
-//                        return super.getView(position, convertView, parent);
-//
-//                    }
-//                };
-//                mAnswersView.setAdapter(mAnswerDataArray);
+            public void failure(RetrofitError retrofitError) {
+                Debug.e(TAG, "OH NO!!!! - retrgoit error: " + retrofitError.getCause());
             }
-        }.execute();
+        });
+
     }
 
     private void loadQwubbleImage() {
