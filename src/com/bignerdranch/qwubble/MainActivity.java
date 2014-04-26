@@ -78,6 +78,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         return (int) (QWUBBLE_WIDTH * DENSITY);
     }
 
+    private static final Color ACCENT_COLOR = new Color(0.5f, 0.42f, 0.35f);
+
     TextView mDisplay;
     GoogleCloudMessaging gcm;
     AtomicInteger msgId = new AtomicInteger();
@@ -266,7 +268,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
         this.mScene = new Scene();
-        this.mScene.setBackground(new Background(0, 0, 0));
+        this.mScene.setBackground(new Background(0.19f, 0.18f, 0.16f));
         this.mScene.setOnSceneTouchListener(this);
 
         Highlighter highlighter = new Highlighter(this, getTextureManager());
@@ -310,7 +312,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         mAnswerButtonText2 = new Text(0, 18, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
-        mAnswerButton2.setColor(Color.GREEN);
+        mAnswerButton2.setColor(ACCENT_COLOR);
 
         mAnswerButton2.attachChild(mAnswerButtonText2);
 
@@ -351,7 +353,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         mAddQuestionText = new Text(0, 20, this.mFont, "Ask A Question..", new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
         mAddQuestionButton.attachChild(mAddQuestionText);
-        mAddQuestionButton.setColor(Color.GREEN);
+        mAddQuestionButton.setColor(ACCENT_COLOR);
 
         mAnswerLayerEntity.attachChild(mAddQuestionButton);
         mAddQuestionText.setX(mAddQuestionButton.getWidth() / 2 - mAddQuestionText.getWidth() / 2);
@@ -392,7 +394,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mQwubbleMode = mode;
         if (mode == QwubbleMode.ANSWER) {
             mAnswerButtonText2.setAlpha(1.0f);
-            mAnswerButton2.setColor(Color.GREEN);
+            mAnswerButton2.setColor(ACCENT_COLOR);
             mAskButtonText2.setAlpha(0.3f);
             mAskButton2.setColor(Color.WHITE);
             selectLayer(mQwubbleLayerEntity);
@@ -401,7 +403,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             mAnswerButtonText2.setAlpha(0.3f);
             mAnswerButton2.setColor(Color.WHITE);
             mAskButtonText2.setAlpha(1.0f);
-            mAskButton2.setColor(Color.GREEN);
+            mAskButton2.setColor(ACCENT_COLOR);
             selectLayer(mAnswerLayerEntity);
             mScene.registerTouchArea(mAddQuestionButton);
         }
