@@ -12,11 +12,24 @@
             android:gravity="center_horizontal"
             >
 
-        <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/qwubbleImage"
-                />
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:focusableInTouchMode="true">
+
+            <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/qwubbleImage"
+                    />
+
+            <ImageView
+                    android:layout_width="102dp"
+                    android:layout_height="102dp"
+                    android:src="@drawable/bubble"/>
+        </FrameLayout>
     </LinearLayout>
 
     <TextView
