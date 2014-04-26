@@ -75,7 +75,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     public LayerEntity mActiveLayer;
 
     public static final int getQwubbleWidth() {
-        return (int) (QWUBBLE_WIDTH * DENSITY);
+        return mCameraSize.getWidth() / 8;
     }
 
     private static final Color ACCENT_COLOR = new Color(0.5f, 0.42f, 0.35f);
@@ -85,7 +85,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     AtomicInteger msgId = new AtomicInteger();
     SharedPreferences prefs;
     Context context;
-    private CameraSize mCameraSize;
+    private static CameraSize mCameraSize;
     private ZoomLayerEntity mZoomLayer;
 
     public String regid;
