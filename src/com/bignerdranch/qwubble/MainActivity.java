@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
+import com.bignerdranch.qwubble.data.QuestionData;
+import com.bignerdranch.qwubble.data.QwubbleData;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import com.bignerdranch.qwubble.event.ZoomOutEvent;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
@@ -294,6 +296,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         return this.mScene;
     }
 
+    private void addDebugQuestions() {
+        QuestionData data = new QuestionData();
+        data.imageUrl = "http://res.cloudinary.com/demo/image/fetch/w_300,h_300,r_300,c_thumb,g_face,c_fill,/http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg";
+        data.question = "hey";
+
+        mQwubbleLayerEntity.addQuestion(data, mQwubbleMode);
+    }
+
+
     private void selectLayer(Entity entity) {
         for (LayerEntity layer : mLayers) {
             if (layer == entity) {
@@ -420,7 +431,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
             @Override
             public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
-                QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+                Intent i = QwubbleDialogActivity.getIntent(MainActivity.this, regid, event.mQwubble);
+                startActivity(i);
+                //QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
             }
         });
     }
