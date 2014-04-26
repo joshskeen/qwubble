@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import com.bignerdranch.qwubble.event.ZoomOutEvent;
@@ -93,6 +94,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Rectangle mAskButton2;
     private Rectangle mAnswerButton2;
     public static final int BUTTON_HEIGHT = 100;
+
     private QwubbleLayerEntity mQwubbleLayerEntity;
     private AnswerLayerEntity mAnswerLayerEntity;
 
@@ -157,6 +159,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             public void success(Void aVoid, Response response) {
                 Log.d(TAG, "Success");
             }
+
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.d(TAG, "Failure");
@@ -198,16 +201,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             public void onReceive(Context context, Intent intent) {
                 //handles new Questions & Answers being sent
                 String data = intent.getStringExtra("qwubble");
-                System.out.println(data);
                 Gson gson = new Gson();
                 JsonObject asJsonObject1 = new JsonParser().parse(data).getAsJsonObject();
-                System.out.println(asJsonObject1);
                 String type = asJsonObject1.get("type").getAsString();
-                System.out.println(type);
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
-                    mQwubbleLayerEntity.addQuestion(response.mQuestionData);
-                    mAnswerLayerEntity.addQuestion(response.mQuestionData);
+                    mQwubbleLayerEntity.addQuestion(response.mQuestionData, mQwubbleMode);
+                    mAnswerLayerEntity.addAnswer(new AnswerData(), mQwubbleMode);
                 } else if (type.equals("answer_creation_notification")) {
 
                 } else {
@@ -229,9 +229,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         Highlighter highlighter = new Highlighter(this, getTextureManager());
 
         mQwubbleLayerEntity = new QwubbleLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene,
-                newPhysicsWorld(), mCameraSize);
+                newPhysicsWorld(), mCameraSize, this);
         mAnswerLayerEntity = new AnswerLayerEntity(getVertexBufferObjectManager(), getTextureManager(), mScene,
-                newPhysicsWorld(), mCameraSize);
+                newPhysicsWorld(), mCameraSize, this);
 
         ZoomLayerEntity zoomLayerEntity = new ZoomLayerEntity(mCameraSize, highlighter);
 
@@ -248,9 +248,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         zoomLayerEntity.setHighlighter(highlighter);
         mZoomLayer = zoomLayerEntity;
 
-
         int buttonWidth = mCameraSize.getWidth() / 2;
         int offset = 0;
+
 
         mAnswerButton2 = new Rectangle(0, mCameraSize.getHeight() - (BUTTON_HEIGHT + offset), buttonWidth, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
             @Override
@@ -286,24 +286,36 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         this.mScene.attachChild(mQwubbleLayerEntity);
         this.mScene.attachChild(mAnswerLayerEntity);
+
         this.mScene.attachChild(zoomLayerEntity);
+
+        updateQwubbleMode(mQwubbleMode);
+
         return this.mScene;
     }
 
     private void selectLayer(Entity entity) {
         for (Entity layer : mLayers) {
             layer.setVisible(layer == entity);
+            mScene.unregisterTouchArea(layer);
         }
     }
 
     private PhysicsWorld newPhysicsWorld() {
         PhysicsWorld world = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
-
         mPhysicsWorlds.add(world);
-
         return world;
     }
 
+    private void updateModeLayerTouchRegistration() {
+        if (mQwubbleMode == QwubbleMode.ANSWER) {
+            mQwubbleLayerEntity.enableTouchChildSprites();
+            mAnswerLayerEntity.disableTouchChildSprites();
+        } else {
+            mAnswerLayerEntity.enableTouchChildSprites();
+            mQwubbleLayerEntity.disableTouchChildSprites();
+        }
+    }
 
     private void updateQwubbleMode(QwubbleMode mode) {
         mQwubbleMode = mode;
@@ -312,14 +324,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             mAnswerButton2.setColor(Color.GREEN);
             mAskButtonText2.setAlpha(0.3f);
             mAskButton2.setColor(Color.WHITE);
-            selectLayer(mAnswerLayerEntity);
+            selectLayer(mQwubbleLayerEntity);
         } else {
             mAnswerButtonText2.setAlpha(0.3f);
             mAnswerButton2.setColor(Color.WHITE);
             mAskButtonText2.setAlpha(1.0f);
             mAskButton2.setColor(Color.GREEN);
-            selectLayer(mQwubbleLayerEntity);
+            selectLayer(mAnswerLayerEntity);
         }
+        updateModeLayerTouchRegistration();
     }
 
     private SharedPreferences getGCMPreferences(Context context) {
@@ -376,11 +389,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     @Override
     public void onAccelerationChanged(final AccelerationData accelerationData) {
         final Vector2 gravity = Vector2Pool.obtain(accelerationData.getX(), accelerationData.getY());
-
         for (PhysicsWorld world : mPhysicsWorlds) {
             world.setGravity(gravity);
         }
-
         Vector2Pool.recycle(gravity);
     }
 
@@ -401,10 +412,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         super.onPauseGame();
         EventBus.getDefault().unregister(this);
         this.disableAccelerationSensor();
+        Log.d(TAG, "UNREGISTER RECEIVER");
         unregisterReceiver(mGCMBroadcastReceiver);
     }
 
-    public void onEvent(final ZoomOutEvent event){
+    public void onEvent(final ZoomOutEvent event) {
         mZoomLayer.zoomOut();
     }
 

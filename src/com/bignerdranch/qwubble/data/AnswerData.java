@@ -2,10 +2,10 @@ package com.bignerdranch.qwubble.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AnswerData {
+public class AnswerData extends QwubbleData {
 
     @SerializedName("id")
-    public String id;
+    public int id;
 
     @SerializedName("question")
     public String question;
@@ -23,6 +23,22 @@ public class AnswerData {
                 ", question='" + question + '\'' +
                 ", answer='" + answer + '\'' +
                 ", questionId=" + questionId +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
+    }
+
+    @Override
+    public String getQuestion() {
+        return question;
+    }
+
+    @Override
+    public String getAnswer() {
+        return answer;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }

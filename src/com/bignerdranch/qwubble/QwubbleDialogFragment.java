@@ -6,6 +6,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,6 +55,18 @@ public class QwubbleDialogFragment extends DialogFragment {
         bundle.putSerializable(QWUBBLE_DATA, iQwubble);
         qwubbleDialogFragment.setArguments(bundle);
         return qwubbleDialogFragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() == null){
+            return;
+        }
+        getDialog().getWindow().setWindowAnimations(R.style.dialog_animation_fade);
+        Drawable d = new ColorDrawable(Color.BLACK);
+        d.setAlpha(130);
+        getDialog().getWindow().setBackgroundDrawable(d);
     }
 
     @Override
@@ -121,8 +136,8 @@ public class QwubbleDialogFragment extends DialogFragment {
                             }
                         }
                 );
-
-        return b.create();
+        AlertDialog alertDialog = b.create();
+        return alertDialog;
     }
 
     //get the qwubble answers, and display them in the list
@@ -145,6 +160,7 @@ public class QwubbleDialogFragment extends DialogFragment {
                         }
                     };
                     mAnswersView.setAdapter(arrayAdapter);
+                    mAnswersView.setSelection(arrayAdapter.getCount() - 1);
                 }
             }
 
