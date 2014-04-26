@@ -110,6 +110,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private Rectangle mAnswerButton2;
     public static final int BUTTON_HEIGHT = 100;
 
+    public static int getButtonHeight() {
+        return (int)(BUTTON_HEIGHT * DENSITY);
+    }
+
     private QwubbleLayerEntity mQwubbleLayerEntity;
     private AnswerLayerEntity mAnswerLayerEntity;
 
@@ -268,7 +272,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
         this.mScene = new Scene();
-        this.mScene.setBackground(new Background(0.19f, 0.18f, 0.16f));
+        this.mScene.setBackground(new Background(0.13f, 0.11f, 0.09f));
         this.mScene.setOnSceneTouchListener(this);
 
         Highlighter highlighter = new Highlighter(this, getTextureManager());
@@ -300,7 +304,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         int offset = 0;
 
 
-        mAnswerButton2 = new Rectangle(0, mCameraSize.getHeight() - (BUTTON_HEIGHT + offset), buttonWidth, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
+        mAnswerButton2 = new Rectangle(0, mCameraSize.getHeight() - (getButtonHeight() + offset), buttonWidth, getButtonHeight(), getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 updateQwubbleMode(QwubbleMode.ANSWER);
@@ -316,7 +320,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         mAnswerButton2.attachChild(mAnswerButtonText2);
 
-        mAskButton2 = new Rectangle(buttonWidth, mCameraSize.getHeight() - (BUTTON_HEIGHT + offset), (mCameraSize.getWidth() / 2) + 1, BUTTON_HEIGHT, getVertexBufferObjectManager()) {
+        mAskButton2 = new Rectangle(buttonWidth, mCameraSize.getHeight() - (getButtonHeight() + offset), (mCameraSize.getWidth() / 2) + 1, getButtonHeight(), getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 updateQwubbleMode(QwubbleMode.ASK);
@@ -340,7 +344,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
         int buttonPadding = 40;
 
-        mAddQuestionButton = new Rectangle(buttonPadding, 80, mCameraSize.getWidth() - (buttonPadding * 2), BUTTON_HEIGHT, getVertexBufferObjectManager()) {
+        mAddQuestionButton = new Rectangle(buttonPadding, 80, mCameraSize.getWidth() - (buttonPadding * 2), getButtonHeight(), getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (pSceneTouchEvent.isActionDown()) {

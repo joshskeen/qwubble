@@ -18,7 +18,7 @@ public class CameraSize {
     }
 
     public int getHeightWithButtonOffset(){
-        return getHeight() - ( MainActivity.BUTTON_HEIGHT + 50);
+        return getHeight() - (int)( MainActivity.getButtonHeight() + 50 * MainActivity.DENSITY);
     }
 
     public int percentWidthPx(int percent){
