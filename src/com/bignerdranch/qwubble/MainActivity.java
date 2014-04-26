@@ -239,7 +239,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData, mActiveLayer);
-                    selectLayer(mActiveLayer);
                     if (!regid.equals(response.mQuestionData.registrationId)) {
                         Crouton.makeText(MainActivity.this, "New Question: " + response.mQuestionData.getQuestion(), Style.INFO).show();
                     }
@@ -251,6 +250,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 } else {
                     Debug.d(TAG, "NOTHING!");
                 }
+
+                selectLayer(mActiveLayer);
+
                 System.out.println("----> " + data);
             }
         };
@@ -370,15 +372,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     private void selectLayer(LayerEntity entity) {
         mActiveLayer = entity;
+
         for (LayerEntity layer : mLayers) {
-            if (layer == entity) {
-                layer.setVisible(true);
-                layer.enableTouchChildSprites();
-            } else {
-                layer.setVisible(false);
-                layer.disableTouchChildSprites();
-            }
+            layer.setVisible(false);
+            layer.disableTouchChildSprites();
         }
+
+        mActiveLayer.setVisible(true);
+        mActiveLayer.enableTouchChildSprites();
     }
 
     private PhysicsWorld newPhysicsWorld() {
