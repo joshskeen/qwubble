@@ -205,7 +205,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 
     @Override
     public Scene onCreateScene() {
-
         mGCMBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -222,7 +221,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                     }
                 } else if (type.equals("answer_creation_notification")) {
                     GCMAnswerResponse response = gson.fromJson(data, GCMAnswerResponse.class);
-                    Crouton.makeText(MainActivity.this, response.mAnswerData.getAnswer() + " : " + response.mAnswerData.getAnswer(), Style.CONFIRM).show();
+                    Crouton.makeText(MainActivity.this, response.mAnswerData.getQuestion() + " : " + response.mAnswerData.getAnswer(), Style.CONFIRM).show();
                     mAnswerLayerEntity.addAnswer(response.mAnswerData, mQwubbleMode);
                     Debug.d(TAG, "!!!!!!!");
                 } else {
