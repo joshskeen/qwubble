@@ -50,8 +50,8 @@ public class QwubbleLayerEntity extends LayerEntity {
     }
 
     public void addQuestion(QuestionData questionData, LayerEntity activeLayer) {
-        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.getQwubbleWidth());
-        addQwubble(randomX, MainActivity.getQwubbleWidth(), questionData, activeLayer);
+        int randomX = mCameraSize.getWidth() / 2;
+        addQwubble(randomX, MainActivity.getQwubbleWidth() + 5, questionData, activeLayer);
     }
 
     private void addQwubble(final float x, final float y, final IQwubble qwubble, final LayerEntity activeLayer) {
