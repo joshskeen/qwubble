@@ -112,8 +112,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     @Override
     public EngineOptions onCreateEngineOptions() {
 
-        int widthPixels = 720;
-        int heightPixels = 1280;
+        int widthPixels = 780;
+        int heightPixels = 1282;
 
         CameraSize size = new CameraSize(widthPixels, heightPixels);
         mCameraSize = size;
