@@ -93,7 +93,7 @@ public class ZoomSprite extends Sprite {
     private void updateZoomPosition() {
         setX(scale(mTargetSprite.getX(), mZoomX, mZoomRatio));
         setY(scale(mTargetSprite.getY(), mZoomY, mZoomRatio));
-        setRotation(scale(mTargetSprite.getRotation(), 0, mZoomRatio));
+        setRotation(scale(mTargetSprite.getRotation(), 720 * 2, mZoomRatio));
         setScale(scale(1, mZoomScale, mZoomRatio));
     }
 
