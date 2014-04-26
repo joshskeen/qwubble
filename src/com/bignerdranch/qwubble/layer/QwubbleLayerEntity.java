@@ -28,6 +28,7 @@ import org.andengine.util.debug.Debug;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -40,7 +41,9 @@ import java.util.Random;
 
 //THE LAYER FOR THE "ANSWER" TAB
 
-public class QwubbleLayerEntity extends LayerEntity{
+public class QwubbleLayerEntity extends LayerEntity {
+
+    public static String DEFAULT_IMAGE = "http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg";
 
     public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
         super(vertexBufferObjectManager, textureManager, scene, physicsWorld, cameraSize, mainActivity);
@@ -102,6 +105,28 @@ public class QwubbleLayerEntity extends LayerEntity{
 
                     imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
 
+                } catch (FileNotFoundException e) {
+                    ITexture mTexture = null;
+                    try {
+                        mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
+                            @Override
+                            public InputStream open() throws IOException {
+                                Random rand = new Random();
+                                int randomMod = rand.nextInt(100) + 1;
+                                URL url = new URL(Util.getCloudinaryUrl(DEFAULT_IMAGE, MainActivity.QWUBBLE_WIDTH - randomMod));
+                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                connection.setDoInput(true);
+                                connection.connect();
+                                InputStream input = connection.getInputStream();
+                                BufferedInputStream in = new BufferedInputStream(input);
+                                return in;
+                            }
+                        });
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    mTexture.load();
+                    imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
                 } catch (IOException e) {
                     Debug.e(e);
                 }

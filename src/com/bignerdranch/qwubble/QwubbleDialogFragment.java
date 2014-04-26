@@ -86,7 +86,6 @@ public class QwubbleDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.question_activity, container, false);
 
-        loadQwubbleAnswers();
 
         mQuestionText = (TextView) view.findViewById(R.id.qwubbleQuestion);
         mImageView = (ImageView) view.findViewById(R.id.qwubbleImage);
@@ -103,7 +102,6 @@ public class QwubbleDialogFragment extends DialogFragment {
         mQuestionText.setText(mIQwubble.getQuestion());
         Debug.d("QUBBLE ID: " + mIQwubble.getId());
 
-        loadQwubbleImage();
 
 
         mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
@@ -124,10 +122,11 @@ public class QwubbleDialogFragment extends DialogFragment {
                 });
             }
         });
+        loadQwubbleAnswers();
+        loadQwubbleImage();
 
         return view;
     }
-
 
     //get the qwubble answers, and display them in the list
     private void loadQwubbleAnswers() {

@@ -28,6 +28,7 @@ import org.andengine.util.debug.Debug;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -99,6 +100,28 @@ public class AnswerLayerEntity extends LayerEntity {
                     mTexture.load();
                     imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
 
+                } catch (FileNotFoundException e) {
+                    ITexture mTexture = null;
+                    try {
+                        mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
+                            @Override
+                            public InputStream open() throws IOException {
+                                Random rand = new Random();
+                                int randomMod = rand.nextInt(100) + 1;
+                                URL url = new URL(Util.getCloudinaryUrl(QwubbleLayerEntity.DEFAULT_IMAGE, MainActivity.QWUBBLE_WIDTH - randomMod));
+                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                                connection.setDoInput(true);
+                                connection.connect();
+                                InputStream input = connection.getInputStream();
+                                BufferedInputStream in = new BufferedInputStream(input);
+                                return in;
+                            }
+                        });
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    mTexture.load();
+                    imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
                 } catch (IOException e) {
                     Debug.e(e);
                 }

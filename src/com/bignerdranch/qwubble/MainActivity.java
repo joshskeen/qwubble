@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.bignerdranch.qwubble.data.AnswerData;
+import com.bignerdranch.qwubble.data.GCMAnswerResponse;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.data.QuestionData;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
@@ -27,6 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.greenrobot.event.EventBus;
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -240,10 +242,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData, mActiveLayer);
-                    mAnswerLayerEntity.addAnswer(new AnswerData(), mActiveLayer);
                     selectLayer(mActiveLayer);
+                    if (!regid.equals(response.mQuestionData.registrationId)) {
+                        Crouton.makeText(MainActivity.this, "New Question: " + response.mQuestionData.getQuestion(), Style.INFO).show();
+                    }
                 } else if (type.equals("answer_creation_notification")) {
-
+                    GCMAnswerResponse response = gson.fromJson(data, GCMAnswerResponse.class);
+                    Crouton.makeText(MainActivity.this, response.mAnswerData.getAnswer() + " : " + response.mAnswerData.getAnswer(), Style.CONFIRM).show();
+                    mAnswerLayerEntity.addAnswer(response.mAnswerData, mActiveLayer);
+                    Debug.d(TAG, "!!!!!!!");
                 } else {
                     Debug.d(TAG, "NOTHING!");
                 }
@@ -462,6 +469,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
     private boolean isResumed = false;
+
     @Override
     public void onResumeGame() {
         super.onResumeGame();
@@ -527,7 +535,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 break;
         }
         mZoomLayer.zoomOut();
-        
+
     }
 
     public enum QwubbleMode {
