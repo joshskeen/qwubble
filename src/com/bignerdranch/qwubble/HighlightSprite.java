@@ -8,7 +8,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
  * Created by bphillips on 4/25/14.
  */
 public class HighlightSprite extends Sprite {
-    private static final float PAD = 4f;
+    private static final float PAD = 1f;
 
     private final Sprite mHighlightTarget;
 

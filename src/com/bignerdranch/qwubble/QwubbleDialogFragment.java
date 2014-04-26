@@ -129,27 +129,6 @@ public class QwubbleDialogFragment extends DialogFragment {
     }
 
 
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//
-//        LayoutInflater i = getActivity().getLayoutInflater();
-//        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
-//        View view = i.inflate(R.layout.qwubble_dialog_fragment, null);
-//
-//
-//        AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
-//                .setView(view)
-//                .setNegativeButton("Close",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                dismiss();
-//                            }
-//                        }
-//                );
-//        AlertDialog alertDialog = b.create();
-//        return alertDialog;
-//    }
 
     //get the qwubble answers, and display them in the list
     private void loadQwubbleAnswers() {

@@ -71,6 +71,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final int REQUEST_SHOW_QUESTION = 10;
     String SENDER_ID = "735653081262";
     public static final int QWUBBLE_WIDTH = 175;
+    private LayerEntity mActiveLayer;
+
+    public static final int getQwubbleWidth() {
+        return (int) (QWUBBLE_WIDTH * DENSITY);
+    }
 
     TextView mDisplay;
     GoogleCloudMessaging gcm;
@@ -109,7 +114,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private List<PhysicsWorld> mPhysicsWorlds = new ArrayList<PhysicsWorld>();
     private Rectangle mAddQuestionButton;
     private Text mAddQuestionText;
-    private static float DENSITY;
+    public static float DENSITY;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -220,8 +225,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 String type = asJsonObject1.get("type").getAsString();
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
-                    mQwubbleLayerEntity.addQuestion(response.mQuestionData, mQwubbleMode);
-                    mAnswerLayerEntity.addAnswer(new AnswerData(), mQwubbleMode);
+                    mQwubbleLayerEntity.addQuestion(response.mQuestionData, mActiveLayer);
+                    mAnswerLayerEntity.addAnswer(new AnswerData(), mActiveLayer);
                 } else if (type.equals("answer_creation_notification")) {
 
                 } else {
@@ -335,11 +340,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         data.imageUrl = "http://res.cloudinary.com/demo/image/fetch/w_300,h_300,r_300,c_thumb,g_face,c_fill,/http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg";
         data.question = "hey";
 
-        mQwubbleLayerEntity.addQuestion(data, mQwubbleMode);
+        mQwubbleLayerEntity.addQuestion(data, mActiveLayer);
     }
 
 
-    private void selectLayer(Entity entity) {
+    private void selectLayer(LayerEntity entity) {
+        mActiveLayer = entity;
         for (LayerEntity layer : mLayers) {
             if (layer == entity) {
                 layer.setVisible(true);

@@ -38,18 +38,16 @@ import java.util.Random;
 
 public class QwubbleLayerEntity extends LayerEntity{
 
-    public static final MainActivity.QwubbleMode LAYER_MODE = MainActivity.QwubbleMode.ANSWER;
-
     public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
         super(vertexBufferObjectManager, textureManager, scene, physicsWorld, cameraSize, mainActivity);
     }
 
-    public void addQuestion(QuestionData questionData, MainActivity.QwubbleMode qwubbleMode) {
-        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
-        addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, questionData, qwubbleMode);
+    public void addQuestion(QuestionData questionData, LayerEntity activeLayer) {
+        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.getQwubbleWidth());
+        addQwubble(randomX, MainActivity.getQwubbleWidth(), questionData, activeLayer);
     }
 
-    private void addQwubble(final float x, final float y, final IQwubble qwubble, final MainActivity.QwubbleMode qwubbleMode) {
+    private void addQwubble(final float x, final float y, final IQwubble qwubble, final LayerEntity activeLayer) {
         this.qwubbleCount++;
         Debug.d("Qwubbles: " + this.qwubbleCount);
         Debug.d("px: " + x + ", py =" + y);
@@ -68,7 +66,7 @@ public class QwubbleLayerEntity extends LayerEntity{
                         public InputStream open() throws IOException {
                             Random rand = new Random();
                             int randomMod = rand.nextInt(100) + 1;
-                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.QWUBBLE_WIDTH - randomMod));
+                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.getQwubbleWidth() - randomMod));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
@@ -96,8 +94,8 @@ public class QwubbleLayerEntity extends LayerEntity{
 
                 attachChild(entity);
                 mHighlighter.addHighlight(entity);
-                if(qwubbleMode == LAYER_MODE){
-                    mScene.registerTouchArea(entity);
+                if (activeLayer == QwubbleLayerEntity.this){
+//                    mScene.registerTouchArea(entity);
                 }
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);

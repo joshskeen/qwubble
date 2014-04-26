@@ -37,18 +37,16 @@ import java.net.URL;
 
 public class AnswerLayerEntity extends LayerEntity {
 
-    public static final MainActivity.QwubbleMode LAYER_MODE = MainActivity.QwubbleMode.ASK;
-
     public AnswerLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
         super(vertexBufferObjectManager, textureManager, scene, physicsWorld, cameraSize, mainActivity);
     }
 
-    public void addAnswer(AnswerData answerData, MainActivity.QwubbleMode qwubbleMode) {
-        int randomX = MainActivity.QWUBBLE_WIDTH + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
-        addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, answerData, qwubbleMode);
+    public void addAnswer(AnswerData answerData, LayerEntity activeLayer) {
+        int randomX = MainActivity.getQwubbleWidth() + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.getQwubbleWidth());
+        addQwubble(randomX, MainActivity.getQwubbleWidth(), answerData, activeLayer);
     }
 
-    private void addQwubble(final float x, final float y, final IQwubble qwubble, final MainActivity.QwubbleMode qwubbleMode) {
+    private void addQwubble(final float x, final float y, final IQwubble qwubble, final LayerEntity activeLayer) {
         this.qwubbleCount++;
         Debug.d("Qwubbles: " + this.qwubbleCount);
         Debug.d("px: " + x + ", py =" + y);
@@ -92,8 +90,8 @@ public class AnswerLayerEntity extends LayerEntity {
 
                 attachChild(entity);
                 mHighlighter.addHighlight(entity);
-                if (qwubbleMode == LAYER_MODE) {
-                    mScene.registerTouchArea(entity);
+                if (activeLayer == AnswerLayerEntity.this) {
+//                    mScene.registerTouchArea(entity);
                 }
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);
