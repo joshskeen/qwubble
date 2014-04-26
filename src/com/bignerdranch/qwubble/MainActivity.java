@@ -25,6 +25,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.greenrobot.event.EventBus;
+import de.neofonie.mobile.app.android.widget.crouton.Crouton;
+import de.neofonie.mobile.app.android.widget.crouton.Style;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
@@ -215,6 +217,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData, mQwubbleMode);
+                    if(!regid.equals(response.mQuestionData.registrationId)){
+                        Crouton.makeText(MainActivity.this, "New Question: " + response.mQuestionData.getQuestion(), Style.INFO).show();
+                    }
                     mAnswerLayerEntity.addAnswer(new AnswerData(), mQwubbleMode);
                 } else if (type.equals("answer_creation_notification")) {
 
