@@ -1,5 +1,6 @@
 package com.bignerdranch.qwubble;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import com.bignerdranch.qwubble.data.IQwubble;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
@@ -23,6 +24,7 @@ public class QwubbleSprite extends Sprite {
     private IQwubble mQwubble;
 
     private ScaleModifier mScaleModifier;
+    private Bitmap mBitmap;
 
     public QwubbleSprite(float x, float y, TextureRegion textureRegion, VertexBufferObjectManager vertexBufferObjectManager, IQwubble qwubble) {
         super(x, y, textureRegion, vertexBufferObjectManager);
@@ -49,5 +51,13 @@ public class QwubbleSprite extends Sprite {
 
     public void setZoomLayer(ZoomLayerEntity zoomLayer) {
         mZoomLayer = zoomLayer;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        mBitmap = bitmap;
+    }
+
+    public Bitmap getBitmap() {
+        return mBitmap;
     }
 }

@@ -1,10 +1,12 @@
 package com.bignerdranch.qwubble;
 
 import android.content.*;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
@@ -71,7 +73,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final int REQUEST_SHOW_ANSWER = 5;
     private static final int REQUEST_SHOW_QUESTION = 10;
     String SENDER_ID = "735653081262";
-    public static final int QWUBBLE_WIDTH = 175;
+    public static final int QWUBBLE_WIDTH = 100;
+    private LayerEntity mActiveLayer;
+
+    public static final int getQwubbleWidth() {
+        return (int) (QWUBBLE_WIDTH * DENSITY);
+    }
 
     TextView mDisplay;
     GoogleCloudMessaging gcm;
@@ -110,12 +117,30 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private List<PhysicsWorld> mPhysicsWorlds = new ArrayList<PhysicsWorld>();
     private Rectangle mAddQuestionButton;
     private Text mAddQuestionText;
+    public static float DENSITY;
+    public static float ZOOMED_SIZE;
+    public static float ZOOMED_CENTER_X;
+    public static float ZOOMED_CENTER_Y;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
 
-        int widthPixels = 780;
-        int heightPixels = 1282;
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        DENSITY = metrics.density;
+
+        // calculate where the dialog images will go
+        int imageWidthDp = 119;
+        float imageWidthPx = DENSITY * imageWidthDp;
+        int imageTopGapDp = 23;
+        float imageTopGapPx = DENSITY * imageTopGapDp;
+
+        int widthPixels = metrics.widthPixels;
+        int heightPixels = metrics.heightPixels;
+
+        ZOOMED_SIZE = imageWidthPx;
+        ZOOMED_CENTER_X = widthPixels / 2;
+        ZOOMED_CENTER_Y = imageTopGapPx + imageWidthPx / 2;
 
         CameraSize size = new CameraSize(widthPixels, heightPixels);
         mCameraSize = size;
@@ -215,14 +240,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 String type = asJsonObject1.get("type").getAsString();
                 if (type.equals("question_creation_notification")) {
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
-                    mQwubbleLayerEntity.addQuestion(response.mQuestionData, mQwubbleMode);
+                    mQwubbleLayerEntity.addQuestion(response.mQuestionData, mActiveLayer);
+                    selectLayer(mActiveLayer);
                     if (!regid.equals(response.mQuestionData.registrationId)) {
                         Crouton.makeText(MainActivity.this, "New Question: " + response.mQuestionData.getQuestion(), Style.INFO).show();
                     }
                 } else if (type.equals("answer_creation_notification")) {
                     GCMAnswerResponse response = gson.fromJson(data, GCMAnswerResponse.class);
                     Crouton.makeText(MainActivity.this, response.mAnswerData.getQuestion() + " : " + response.mAnswerData.getAnswer(), Style.CONFIRM).show();
-                    mAnswerLayerEntity.addAnswer(response.mAnswerData, mQwubbleMode);
+                    mAnswerLayerEntity.addAnswer(response.mAnswerData, mActiveLayer);
                     Debug.d(TAG, "!!!!!!!");
                 } else {
                     Debug.d(TAG, "NOTHING!");
@@ -232,6 +258,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         };
 
         setupPlayServices();
+
+        // find out where to put the zoomed qwubbles
+
+        float zoomedWidthPixels = DENSITY * 125;
 
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
@@ -260,6 +290,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         selectLayer(mQwubbleLayerEntity);
         zoomLayerEntity.setHighlighter(highlighter);
         mZoomLayer = zoomLayerEntity;
+        mZoomLayer.setZoomSpriteWidth(ZOOMED_SIZE);
+        mZoomLayer.setZoomSpriteX(ZOOMED_CENTER_X);
+        mZoomLayer.setZoomSpriteY(ZOOMED_CENTER_Y);
 
         int buttonWidth = mCameraSize.getWidth() / 2;
         int offset = 0;
@@ -272,6 +305,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 return true;
             }
         };
+
+        Log.i(TAG, "ZOOM BUTTON 2 WIDTH: " + mAnswerButton2.getWidth());
 
         mAnswerButtonText2 = new Text(0, 18, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
@@ -331,11 +366,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         data.imageUrl = "http://res.cloudinary.com/demo/image/fetch/w_300,h_300,r_300,c_thumb,g_face,c_fill,/http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg";
         data.question = "hey";
 
-        mQwubbleLayerEntity.addQuestion(data, mQwubbleMode);
+        mQwubbleLayerEntity.addQuestion(data, mActiveLayer);
     }
 
 
-    private void selectLayer(Entity entity) {
+    private void selectLayer(LayerEntity entity) {
+        mActiveLayer = entity;
         for (LayerEntity layer : mLayers) {
             if (layer == entity) {
                 layer.setVisible(true);
@@ -482,7 +518,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
 //                    code = REQUEST_SHOW_QUESTION;
 //                }
 //                startActivityForResult(i, code);
-                QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+                QwubbleDialogFragment.newInstance(event.mQwubble, regid, event.mSprite.getBitmap()).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
             }
         });
     }

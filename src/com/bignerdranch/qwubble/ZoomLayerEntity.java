@@ -62,15 +62,16 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
             mZoomData = zoomData;
 
             float[] center = new float[] {
-                    mZoomSpriteX,
-                    mZoomSpriteY,
+                    mZoomSpriteX - sprite.getWidth() / 2,
+                    mZoomSpriteY - sprite.getHeight() / 2,
             };
 
             Log.i(TAG, "Center coords: " + center[0] + ", " + center[1]);
 
-            mZoomSprite = new ZoomSprite(center[0], center[1], 500, sprite);
+            mZoomSprite = new ZoomSprite(center[0], center[1], mZoomSpriteWidth, sprite);
             mZoomSprite.setOnZoomListener(this);
             attachChild(mZoomSprite);
+
             mHighlighter.addHighlight(mZoomSprite);
 
             mZoomSprite.zoomIn();
@@ -120,6 +121,7 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
     }
 
     public void setZoomSpriteX(float zoomSpriteX) {
+        Log.i(TAG, "SET ZOOM X FOR SPRITE: " + zoomSpriteX);
         mZoomSpriteX = zoomSpriteX;
     }
 
@@ -128,6 +130,7 @@ public class ZoomLayerEntity extends Entity implements ZoomSprite.OnZoomListener
     }
 
     public void setZoomSpriteY(float zoomSpriteY) {
+        Log.i(TAG, "SET ZOOM Y FOR SPRITE: " + zoomSpriteY);
         mZoomSpriteY = zoomSpriteY;
     }
 }

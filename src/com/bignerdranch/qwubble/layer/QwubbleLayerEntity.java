@@ -1,5 +1,7 @@
 package com.bignerdranch.qwubble.layer;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,6 +26,8 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,18 +45,16 @@ public class QwubbleLayerEntity extends LayerEntity {
 
     public static String DEFAULT_IMAGE = "http://fc07.deviantart.net/fs44/i/2009/086/e/3/THE_EASTER_BUNNY_SUIT_by_chuckjarman.jpg";
 
-    public static final MainActivity.QwubbleMode LAYER_MODE = MainActivity.QwubbleMode.ANSWER;
-
     public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
         super(vertexBufferObjectManager, textureManager, scene, physicsWorld, cameraSize, mainActivity);
     }
 
-    public void addQuestion(QuestionData questionData, MainActivity.QwubbleMode qwubbleMode) {
-        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
-        addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, questionData, qwubbleMode);
+    public void addQuestion(QuestionData questionData, LayerEntity activeLayer) {
+        int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.getQwubbleWidth());
+        addQwubble(randomX, MainActivity.getQwubbleWidth(), questionData, activeLayer);
     }
 
-    private void addQwubble(final float x, final float y, final IQwubble qwubble, final MainActivity.QwubbleMode qwubbleMode) {
+    private void addQwubble(final float x, final float y, final IQwubble qwubble, final LayerEntity activeLayer) {
         this.qwubbleCount++;
         Debug.d("Qwubbles: " + this.qwubbleCount);
         Debug.d("px: " + x + ", py =" + y);
@@ -62,25 +64,45 @@ public class QwubbleLayerEntity extends LayerEntity {
 
         new AsyncTask<Void, Void, TextureRegion>() {
             TextureRegion imageFromWebservice;
+            public Bitmap mBitmap;
 
             @Override
             protected TextureRegion doInBackground(Void... params) {
                 try {
-                    ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
+                    BitmapTexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
+
+
                         @Override
                         public InputStream open() throws IOException {
                             Random rand = new Random();
                             int randomMod = rand.nextInt(100) + 1;
-                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.QWUBBLE_WIDTH - randomMod));
+                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.getQwubbleWidth() - randomMod));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
+
                             InputStream input = connection.getInputStream();
-                            BufferedInputStream in = new BufferedInputStream(input);
-                            return in;
+
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+                            int data;
+                            while ((data = input.read()) != -1) {
+                                byteArrayOutputStream.write(data);
+                            }
+
+                            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+                            try {
+                                mBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            } catch (Exception e) {
+                                // ignore - if we can't do it, fine
+                            }
+
+                            return new ByteArrayInputStream(byteArray);
                         }
                     });
                     mTexture.load();
+
                     imageFromWebservice = TextureRegionFactory.extractFromTexture(mTexture);
 
                 } catch (FileNotFoundException e) {
@@ -116,14 +138,12 @@ public class QwubbleLayerEntity extends LayerEntity {
                 VertexBufferObjectManager vertexBufferObjectManager = getVertexBufferObjectManager();
                 QwubbleSprite entity = new QwubbleSprite(x, y, textureRegion, getVertexBufferObjectManager(), qwubble);
                 entity.setZoomLayer(mZoomLayer);
+                entity.setBitmap(mBitmap);
 
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
 
                 attachChild(entity);
                 mHighlighter.addHighlight(entity);
-                if (qwubbleMode == LAYER_MODE) {
-                    mScene.registerTouchArea(entity);
-                }
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);
             }

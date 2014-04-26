@@ -5,6 +5,7 @@ import org.andengine.entity.modifier.IEntityModifier;
 import org.andengine.entity.modifier.SingleValueSpanEntityModifier;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.modifier.ease.EaseBounceOut;
+import org.andengine.util.modifier.ease.EaseExponentialOut;
 
 public class ZoomSprite extends Sprite {
     public OnZoomListener getOnZoomListener() {
@@ -55,7 +56,7 @@ public class ZoomSprite extends Sprite {
             unregisterEntityModifier(mZoomModifier);
         }
 
-        mZoomModifier = new SingleValueSpanEntityModifier(0.6f, mZoomRatio, zoom, EaseBounceOut.getInstance()) {
+        mZoomModifier = new SingleValueSpanEntityModifier(0.3f, mZoomRatio, zoom, EaseExponentialOut.getInstance()) {
 
             @Override
             protected void onSetInitialValue(IEntity pItem, float pValue) {

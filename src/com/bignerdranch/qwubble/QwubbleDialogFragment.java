@@ -32,21 +32,24 @@ public class QwubbleDialogFragment extends DialogFragment {
 
     public static final String QWUBBLE_DATA = "QwubbleData";
     private static final String TAG = "QwubbleDialogFragment";
+    private static final String QWUBBLE_BITMAP = "QwubbleBitmap";
     private static String mRegID;
     private TextView mQuestionText;
     private ListView mAnswersView;
     private IQwubble mIQwubble;
     private ImageView mImageView;
     private View mAnswerQuestionButton;
+    private Bitmap mBitmap;
     private EditText mAnswerQuestionEditText;
     private TextView noAnswersFound;
     private ArrayAdapter<AnswerData> mAnswerDataArray;
 
-    public static QwubbleDialogFragment newInstance(IQwubble iQwubble, String regId) {
+    public static QwubbleDialogFragment newInstance(IQwubble iQwubble, String regId, Bitmap bitmap) {
         QwubbleDialogFragment qwubbleDialogFragment = new QwubbleDialogFragment();
         Bundle bundle = new Bundle();
         mRegID = regId;
         bundle.putSerializable(QWUBBLE_DATA, iQwubble);
+        bundle.putParcelable(QWUBBLE_BITMAP, bitmap);
         qwubbleDialogFragment.setArguments(bundle);
         return qwubbleDialogFragment;
     }
@@ -73,8 +76,9 @@ public class QwubbleDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
+        mBitmap = (Bitmap) getArguments().getParcelable(QWUBBLE_BITMAP);
 
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_NoActionBar_Fullscreen);
     }
 
     @Override
@@ -97,6 +101,8 @@ public class QwubbleDialogFragment extends DialogFragment {
         }
         mQuestionText.setText(mIQwubble.getQuestion());
         Debug.d("QUBBLE ID: " + mIQwubble.getId());
+
+
 
         mAnswerQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,8 +128,6 @@ public class QwubbleDialogFragment extends DialogFragment {
         return view;
     }
 
-
-
     //get the qwubble answers, and display them in the list
     private void loadQwubbleAnswers() {
 
@@ -140,6 +144,12 @@ public class QwubbleDialogFragment extends DialogFragment {
                             }
                             TextView answerText = (TextView) convertView.findViewById(R.id.mAnswerDisplayTV);
                             answerText.setText(getItem(position).answer);
+
+                            if (position % 2 == 0) {
+                                convertView.setBackgroundColor(0xff7f6c58);
+                            } else {
+                                convertView.setBackgroundColor(0xff302d29);
+                            }
                             return convertView;
                         }
                     };
@@ -157,6 +167,10 @@ public class QwubbleDialogFragment extends DialogFragment {
     }
 
     private void loadQwubbleImage() {
+        if (mBitmap != null) {
+            mImageView.setImageBitmap(mBitmap);
+            return;
+        }
 
         new AsyncTask<Void, Void, Bitmap>() {
 
