@@ -70,9 +70,7 @@ public class AnswerLayerEntity extends LayerEntity {
                     ITexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                         @Override
                         public InputStream open() throws IOException {
-                            Random rand = new Random();
-                            int randomMod = rand.nextInt(100) + 1;
-                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.getQwubbleWidth() - randomMod));
+                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), getQwubbleWidth()));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
@@ -106,9 +104,7 @@ public class AnswerLayerEntity extends LayerEntity {
                         mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
                             @Override
                             public InputStream open() throws IOException {
-                                Random rand = new Random();
-                                int randomMod = rand.nextInt(100) + 1;
-                                URL url = new URL(Util.getCloudinaryUrl(QwubbleLayerEntity.DEFAULT_IMAGE, MainActivity.QWUBBLE_WIDTH - randomMod));
+                                URL url = new URL(Util.getCloudinaryUrl(QwubbleLayerEntity.DEFAULT_IMAGE, getQwubbleWidth()));
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                                 connection.setDoInput(true);
                                 connection.connect();
@@ -145,6 +141,9 @@ public class AnswerLayerEntity extends LayerEntity {
                 mHighlighter.addHighlight(entity);
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);
+
+                mMainActivity.selectLayer(mMainActivity.mActiveLayer);
+
             }
         }.execute();
     }

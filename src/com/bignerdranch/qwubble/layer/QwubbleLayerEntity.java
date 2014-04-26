@@ -71,12 +71,10 @@ public class QwubbleLayerEntity extends LayerEntity {
                 try {
                     BitmapTexture mTexture = new BitmapTexture(getTextureManager(), new IInputStreamOpener() {
 
-
                         @Override
                         public InputStream open() throws IOException {
-                            Random rand = new Random();
-                            int randomMod = rand.nextInt(100) + 1;
-                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), MainActivity.getQwubbleWidth() - randomMod));
+
+                            URL url = new URL(Util.getCloudinaryUrl(qwubble.getImageUrl(), getQwubbleWidth()));
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setDoInput(true);
                             connection.connect();
@@ -113,7 +111,7 @@ public class QwubbleLayerEntity extends LayerEntity {
                             public InputStream open() throws IOException {
                                 Random rand = new Random();
                                 int randomMod = rand.nextInt(100) + 1;
-                                URL url = new URL(Util.getCloudinaryUrl(DEFAULT_IMAGE, MainActivity.QWUBBLE_WIDTH - randomMod));
+                                URL url = new URL(Util.getCloudinaryUrl(DEFAULT_IMAGE, getQwubbleWidth()));
                                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                                 connection.setDoInput(true);
                                 connection.connect();
@@ -148,11 +146,7 @@ public class QwubbleLayerEntity extends LayerEntity {
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);
 
-                if (activeLayer == QwubbleLayerEntity.this) {
-                    mScene.registerTouchArea(entity);
-                }
-
-
+                mMainActivity.selectLayer(mMainActivity.mActiveLayer);
             }
         }.execute();
     }

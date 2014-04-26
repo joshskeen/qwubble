@@ -74,7 +74,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final int REQUEST_SHOW_QUESTION = 10;
     String SENDER_ID = "735653081262";
     public static final int QWUBBLE_WIDTH = 100;
-    private LayerEntity mActiveLayer;
+    public LayerEntity mActiveLayer;
 
     public static final int getQwubbleWidth() {
         return (int) (QWUBBLE_WIDTH * DENSITY);
@@ -373,7 +373,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     }
 
 
-    private void selectLayer(LayerEntity entity) {
+    public void selectLayer(LayerEntity entity) {
         mActiveLayer = entity;
 
         for (LayerEntity layer : mLayers) {
