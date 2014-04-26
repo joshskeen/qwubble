@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
@@ -108,12 +109,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private List<PhysicsWorld> mPhysicsWorlds = new ArrayList<PhysicsWorld>();
     private Rectangle mAddQuestionButton;
     private Text mAddQuestionText;
+    private static float DENSITY;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
 
-        int widthPixels = 720;
-        int heightPixels = 1280;
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        DENSITY = metrics.density;
+
+        int widthPixels = metrics.widthPixels;
+        int heightPixels = metrics.heightPixels;
 
         CameraSize size = new CameraSize(widthPixels, heightPixels);
         mCameraSize = size;
@@ -226,6 +232,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         };
 
         setupPlayServices();
+
+        // find out where to put the zoomed qwubbles
+
+        float zoomedWidthPixels = DENSITY * 125;
 
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
