@@ -15,6 +15,7 @@ import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.data.QuestionData;
 import com.bignerdranch.qwubble.event.ShowAnswerEvent;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
+import com.bignerdranch.qwubble.event.ShowAnswerEvent;
 import com.bignerdranch.qwubble.event.ZoomOutEvent;
 import com.bignerdranch.qwubble.layer.AnswerLayerEntity;
 import com.bignerdranch.qwubble.layer.LayerEntity;
@@ -553,6 +554,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     public enum QwubbleMode {
         ANSWER,
         ASK
+    }
+
+    public void onEvent(final ShowAnswerEvent event) {
+        Debug.d(TAG, "SHOW A QWUBBLE");
+        mZoomLayer.zoomToSprite(event.mQwubbleSprite, event.mQwubble);
+        mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
+            @Override
+            public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
+                AnswerDialogFragment.newInstance(event.mQwubble, regid, event.mQwubbleSprite.getBitmap()).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+            }
+        });
     }
 
 }
