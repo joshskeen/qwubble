@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.GCMAnswerResponse;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.data.QuestionData;
+import com.bignerdranch.qwubble.event.ShowAnswerEvent;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import com.bignerdranch.qwubble.event.ZoomOutEvent;
 import com.bignerdranch.qwubble.layer.AnswerLayerEntity;
@@ -252,7 +253,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 } else {
                     Debug.d(TAG, "NOTHING!");
                 }
-
                 selectLayer(mActiveLayer);
 
                 System.out.println("----> " + data);
@@ -523,6 +523,18 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             }
         });
     }
+
+    public void onEvent(final ShowAnswerEvent event) {
+        Debug.d(TAG, "SHOW A QWUBBLE");
+        mZoomLayer.zoomToSprite(event.mQwubbleSprite, event.mQwubble);
+        mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
+            @Override
+            public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
+                AnswerDialogFragment.newInstance(event.mQwubble, regid, event.mQwubbleSprite.getBitmap()).show(getFragmentManager(), "ANSWER_DIALOG_FRAGMENT");
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
