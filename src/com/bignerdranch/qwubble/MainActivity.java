@@ -466,16 +466,16 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
             @Override
             public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
-                Intent i = QwubbleDialogActivity.getIntent(MainActivity.this, regid, event.mQwubble);
-                int code;
-                
-                if (event.mQwubble instanceof AnswerData) {
-                    code = REQUEST_SHOW_ANSWER;
-                } else {
-                    code = REQUEST_SHOW_QUESTION;
-                }
-                startActivityForResult(i, code);
-                //QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+//                Intent i = QwubbleDialogActivity.getIntent(MainActivity.this, regid, event.mQwubble);
+//                int code;
+//
+//                if (event.mQwubble instanceof AnswerData) {
+//                    code = REQUEST_SHOW_ANSWER;
+//                } else {
+//                    code = REQUEST_SHOW_QUESTION;
+//                }
+//                startActivityForResult(i, code);
+                QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
             }
         });
     }

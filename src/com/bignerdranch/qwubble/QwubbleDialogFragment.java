@@ -60,13 +60,13 @@ public class QwubbleDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (getDialog() == null){
-            return;
-        }
-        getDialog().getWindow().setWindowAnimations(R.style.dialog_animation_fade);
-        Drawable d = new ColorDrawable(Color.BLACK);
-        d.setAlpha(130);
-        getDialog().getWindow().setBackgroundDrawable(d);
+//        if (getDialog() == null){
+//            return;
+//        }
+//        getDialog().getWindow().setWindowAnimations(R.style.dialog_animation_fade);
+//        Drawable d = new ColorDrawable(Color.BLACK);
+//        d.setAlpha(130);
+//        getDialog().getWindow().setBackgroundDrawable(d);
     }
 
     @Override
@@ -79,15 +79,14 @@ public class QwubbleDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
+
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo);
     }
 
-
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        LayoutInflater i = getActivity().getLayoutInflater();
-        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
-        View view = i.inflate(R.layout.qwubble_dialog_fragment, null);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.question_activity, container, false);
 
         loadQwubbleAnswers();
         loadQwubbleImage();
@@ -97,8 +96,8 @@ public class QwubbleDialogFragment extends DialogFragment {
         mAnswersView = (ListView) view.findViewById(R.id.qwubbleAnswers);
         mAnswerQuestionButton = view.findViewById(R.id.answerQuestionButton);
         mAnswerQuestionEditText = (EditText) view.findViewById(R.id.mAnswerQuestionEditText);
-        noAnswersFound = (TextView) view.findViewById(R.id.noAnswersFound);
-        mAnswersView.setEmptyView(noAnswersFound);
+//        noAnswersFound = (TextView) view.findViewById(R.id.noAnswersFound);
+//        mAnswersView.setEmptyView(noAnswersFound);
 
         if (mIQwubble.getQuestion() == null) {
             System.out.println(mIQwubble);
@@ -126,19 +125,31 @@ public class QwubbleDialogFragment extends DialogFragment {
             }
         });
 
-        AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
-                .setView(view)
-                .setNegativeButton("Close",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dismiss();
-                            }
-                        }
-                );
-        AlertDialog alertDialog = b.create();
-        return alertDialog;
+        return view;
     }
+
+
+//    @Override
+//    public Dialog onCreateDialog(Bundle savedInstanceState) {
+//
+//        LayoutInflater i = getActivity().getLayoutInflater();
+//        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
+//        View view = i.inflate(R.layout.qwubble_dialog_fragment, null);
+//
+//
+//        AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
+//                .setView(view)
+//                .setNegativeButton("Close",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dismiss();
+//                            }
+//                        }
+//                );
+//        AlertDialog alertDialog = b.create();
+//        return alertDialog;
+//    }
 
     //get the qwubble answers, and display them in the list
     private void loadQwubbleAnswers() {
@@ -205,13 +216,6 @@ public class QwubbleDialogFragment extends DialogFragment {
             Log.e("NOOOO", "Error getting the image from server : " + e.getMessage().toString());
         }
         return bm;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        return super.onCreateView(inflater, container, savedInstanceState);
-
     }
 
     @Override
