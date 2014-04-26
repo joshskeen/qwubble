@@ -71,7 +71,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
     private static final int REQUEST_SHOW_ANSWER = 5;
     private static final int REQUEST_SHOW_QUESTION = 10;
     String SENDER_ID = "735653081262";
-    public static final int QWUBBLE_WIDTH = 100;
+    public static final int QWUBBLE_WIDTH = 70;
     public LayerEntity mActiveLayer;
 
     public static final int getQwubbleWidth() {
