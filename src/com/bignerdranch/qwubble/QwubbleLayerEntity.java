@@ -3,11 +3,8 @@ package com.bignerdranch.qwubble;
 import android.os.AsyncTask;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.IQwubble;
 import com.bignerdranch.qwubble.data.QuestionData;
-import org.andengine.entity.Entity;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -31,58 +28,20 @@ import java.net.URL;
 /**
  * Created by bphillips on 4/24/14.
  */
-public class QwubbleLayerEntity extends Entity {
-    private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+public class QwubbleLayerEntity extends LayerEntity{
 
-    private PhysicsWorld mPhysicsWorld;
-    private CameraSize mCameraSize;
-    private VertexBufferObjectManager mVertexBufferObjectManager;
-    private TextureManager mTextureManager;
-    private Scene mScene;
-    private ZoomLayerEntity mZoomLayer;
-    private int qwubbleCount;
-    private Highlighter mHighlighter;
-
+    public static final MainActivity.QwubbleMode LAYER_MODE = MainActivity.QwubbleMode.ANSWER;
 
     public QwubbleLayerEntity(VertexBufferObjectManager vertexBufferObjectManager, TextureManager textureManager, Scene scene, PhysicsWorld physicsWorld, CameraSize cameraSize, MainActivity mainActivity) {
-
-        mVertexBufferObjectManager = vertexBufferObjectManager;
-        mTextureManager = textureManager;
-        mScene = scene;
-        mPhysicsWorld = physicsWorld;
-        mCameraSize = cameraSize;
+        super(vertexBufferObjectManager, textureManager, scene, physicsWorld, cameraSize, mainActivity);
     }
 
-    @Override
-    public void onAttached() {
-        super.onAttached();
-
-        final Rectangle ground = new Rectangle(0, mCameraSize.getHeight() - (2 + MainActivity.BUTTON_HEIGHT), mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
-        final Rectangle roof = new Rectangle(0, 0, mCameraSize.getWidth(), 2, mVertexBufferObjectManager);
-        final Rectangle left = new Rectangle(0, 0, 2, mCameraSize.getHeight(), mVertexBufferObjectManager);
-        final Rectangle right = new Rectangle(mCameraSize.getWidth() - 2, 0, 2, mCameraSize.getHeight(), mVertexBufferObjectManager);
-
-        final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
-
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyDef.BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyDef.BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyDef.BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyDef.BodyType.StaticBody, wallFixtureDef);
-
-        attachChild(ground);
-        attachChild(roof);
-        attachChild(left);
-        attachChild(right);
-
-        registerUpdateHandler(this.mPhysicsWorld);
-    }
-
-    public void addQuestion(QuestionData questionData) {
+    public void addQuestion(QuestionData questionData, MainActivity.QwubbleMode qwubbleMode) {
         int randomX = 0 + (int) (Math.random() * mCameraSize.getWidth() - MainActivity.QWUBBLE_WIDTH);
-        addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, questionData);
+        addQwubble(randomX, MainActivity.QWUBBLE_WIDTH, questionData, qwubbleMode);
     }
 
-    private void addQwubble(final float x, final float y, final IQwubble qwubble) {
+    private void addQwubble(final float x, final float y, final IQwubble qwubble, final MainActivity.QwubbleMode qwubbleMode) {
         this.qwubbleCount++;
         Debug.d("Qwubbles: " + this.qwubbleCount);
         Debug.d("px: " + x + ", py =" + y);
@@ -127,34 +86,13 @@ public class QwubbleLayerEntity extends Entity {
 
                 attachChild(entity);
                 mHighlighter.addHighlight(entity);
-                mScene.registerTouchArea(entity);
+                if(qwubbleMode == LAYER_MODE){
+                    mScene.registerTouchArea(entity);
+                }
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
-
+                mChildQwubbles.add(entity);
             }
         }.execute();
     }
 
-    public VertexBufferObjectManager getVertexBufferObjectManager() {
-        return mVertexBufferObjectManager;
-    }
-
-    public TextureManager getTextureManager() {
-        return mTextureManager;
-    }
-
-    public ZoomLayerEntity getZoomLayer() {
-        return mZoomLayer;
-    }
-
-    public void setZoomLayer(ZoomLayerEntity zoomLayer) {
-        mZoomLayer = zoomLayer;
-    }
-
-    public void setHighlighter(Highlighter highlighter) {
-        mHighlighter = highlighter;
-    }
-
-    public Highlighter getHighlighter() {
-        return mHighlighter;
-    }
 }
