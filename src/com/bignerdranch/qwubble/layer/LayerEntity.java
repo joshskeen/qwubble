@@ -13,11 +13,13 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class LayerEntity extends Entity {
     public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
     protected PhysicsWorld mPhysicsWorld;
     protected CameraSize mCameraSize;
+    protected MainActivity mMainActivity;
     protected VertexBufferObjectManager mVertexBufferObjectManager;
     protected TextureManager mTextureManager;
     protected Scene mScene;
@@ -57,6 +59,7 @@ public abstract class LayerEntity extends Entity {
         mScene = scene;
         mPhysicsWorld = physicsWorld;
         mCameraSize = cameraSize;
+        mMainActivity = mainActivity;
     }
 
     public void disableTouchChildSprites(){
@@ -96,5 +99,13 @@ public abstract class LayerEntity extends Entity {
 
         registerUpdateHandler(this.mPhysicsWorld);
     }
+
+    protected int getQwubbleWidth() {
+        Random rand = new Random();
+        int randomMod = (int)((new Random().nextInt(100) + 1) * MainActivity.DENSITY);
+
+        return MainActivity.getQwubbleWidth() + randomMod;
+    }
+
 
 }
