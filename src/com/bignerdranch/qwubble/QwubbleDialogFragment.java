@@ -16,7 +16,9 @@ import android.view.Window;
 import android.widget.*;
 import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.IQwubble;
+import com.bignerdranch.qwubble.event.ZoomOutEvent;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
+import de.greenrobot.event.EventBus;
 import org.andengine.util.debug.Debug;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -53,13 +55,26 @@ public class QwubbleDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        EventBus.getDefault().post(new ZoomOutEvent());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
+    }
+
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         LayoutInflater i = getActivity().getLayoutInflater();
-
+        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
         View view = i.inflate(R.layout.qwubble_dialog_fragment, null);
 
-        loadQwubbleAnswers();
+//        loadQwubbleAnswers();
         loadQwubbleImage();
 
         mQuestionText = (TextView) view.findViewById(R.id.qwubbleQuestion);
@@ -70,6 +85,10 @@ public class QwubbleDialogFragment extends DialogFragment {
         noAnswersFound = (TextView) view.findViewById(R.id.noAnswersFound);
         mAnswersView.setEmptyView(noAnswersFound);
 
+        if(mIQwubble.getQuestion() == null){
+            System.out.println(mIQwubble);
+            System.out.println(mIQwubble);
+        }
         mQuestionText.setText(mIQwubble.getQuestion());
         Debug.d("QUBBLE ID: " + mIQwubble.getId());
 
@@ -94,7 +113,12 @@ public class QwubbleDialogFragment extends DialogFragment {
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .setNegativeButton("Close",
-                        null
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dismiss();
+                            }
+                        }
                 );
 
         return b.create();
@@ -177,13 +201,6 @@ public class QwubbleDialogFragment extends DialogFragment {
             Log.e("NOOOO", "Error getting the image from server : " + e.getMessage().toString());
         }
         return bm;
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
     }
 
     @Override

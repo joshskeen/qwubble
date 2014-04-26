@@ -1,10 +1,6 @@
 package com.bignerdranch.qwubble;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -14,7 +10,8 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
-import com.bignerdranch.qwubble.data.IQwubble;
+import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
+import com.bignerdranch.qwubble.event.ZoomOutEvent;
 import com.bignerdranch.qwubble.web.QwubbleWebservice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -160,7 +157,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             public void success(Void aVoid, Response response) {
                 Log.d(TAG, "Success");
             }
-
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.d(TAG, "Failure");
@@ -212,7 +208,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                     GCMQuestionResponse response = gson.fromJson(data, GCMQuestionResponse.class);
                     mQwubbleLayerEntity.addQuestion(response.mQuestionData);
                     mAnswerLayerEntity.addQuestion(response.mQuestionData);
-                }else if(type.equals("answer_creation_notification")){
+                } else if (type.equals("answer_creation_notification")) {
 
                 } else {
                     Debug.d(TAG, "NOTHING!");
@@ -408,14 +404,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         unregisterReceiver(mGCMBroadcastReceiver);
     }
 
-    public void onEvent(ShowQwubbleEvent event) {
+    public void onEvent(final ZoomOutEvent event){
+        mZoomLayer.zoomOut();
+    }
+
+    public void onEvent(final ShowQwubbleEvent event) {
         Debug.d(TAG, "SHOW A QWUBBLE");
         mZoomLayer.zoomToSprite(event.mSprite, event.mQwubble);
         mZoomLayer.setZoomListener(new ZoomLayerEntity.ZoomListener() {
             @Override
             public void onZoomComplete(ZoomSprite zoomSprite, Object zoomData) {
-                IQwubble data = (IQwubble) zoomData;
-                QwubbleDialogFragment.newInstance(data, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
+                QwubbleDialogFragment.newInstance(event.mQwubble, regid).show(getFragmentManager(), "QWUBBLE_DIALOG_FRAGMENT");
             }
         });
     }

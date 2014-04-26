@@ -1,5 +1,6 @@
-package com.bignerdranch.qwubble;
+package com.bignerdranch.qwubble.event;
 
+import com.bignerdranch.qwubble.QwubbleSprite;
 import com.bignerdranch.qwubble.data.IQwubble;
 
 public class ShowQwubbleEvent {

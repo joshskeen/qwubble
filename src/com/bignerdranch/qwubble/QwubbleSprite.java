@@ -2,6 +2,7 @@ package com.bignerdranch.qwubble;
 
 import android.util.Log;
 import com.bignerdranch.qwubble.data.IQwubble;
+import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import de.greenrobot.event.EventBus;
 import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.sprite.Sprite;
@@ -13,7 +14,7 @@ import org.andengine.util.debug.Debug;
 /**
  * Created by bphillips on 4/24/14.
  */
-class QwubbleSprite extends Sprite {
+public class QwubbleSprite extends Sprite {
     private static final String TAG = "QwubbleSprite";
 
     private boolean mZoomed = false;
