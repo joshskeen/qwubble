@@ -128,9 +128,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
         DENSITY = metrics.density;
 
         // calculate where the dialog images will go
-        int imageWidthDp = 125;
+        int imageWidthDp = 119;
         float imageWidthPx = DENSITY * imageWidthDp;
-        int imageTopGapDp = 12;
+        int imageTopGapDp = 23;
         float imageTopGapPx = DENSITY * imageTopGapDp;
 
         int widthPixels = metrics.widthPixels;
@@ -298,6 +298,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
                 return true;
             }
         };
+
+        Log.i(TAG, "ZOOM BUTTON 2 WIDTH: " + mAnswerButton2.getWidth());
 
         mAnswerButtonText2 = new Text(0, 18, this.mFont, "Answer", new TextOptions(HorizontalAlign.RIGHT), this.getVertexBufferObjectManager());
         mAnswerButtonText2.setX(mAnswerButton2.getWidth() / 2 - mAnswerButtonText2.getWidth() / 2);
