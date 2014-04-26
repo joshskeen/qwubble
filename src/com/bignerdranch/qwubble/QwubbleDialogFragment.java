@@ -78,7 +78,7 @@ public class QwubbleDialogFragment extends DialogFragment {
         mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
         mBitmap = (Bitmap) getArguments().getParcelable(QWUBBLE_BITMAP);
 
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_NoActionBar_Fullscreen);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
     }
 
     @Override
