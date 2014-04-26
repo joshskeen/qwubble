@@ -47,7 +47,7 @@ public class QwubbleWebservice implements QwubbleWebInterface {
 
     @Override
     public void getAnswers(int questionId, Callback<List<AnswerData>> callback) {
-        getService().getAnswers(69, callback);
+        getService().getAnswers(questionId, callback);
     }
 
     @Override
