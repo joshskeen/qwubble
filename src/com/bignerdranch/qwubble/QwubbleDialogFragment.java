@@ -82,8 +82,6 @@ public class QwubbleDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.question_activity, container, false);
 
-        loadQwubbleAnswers();
-        loadQwubbleImage();
 
         mQuestionText = (TextView) view.findViewById(R.id.qwubbleQuestion);
         mImageView = (ImageView) view.findViewById(R.id.qwubbleImage);
@@ -118,6 +116,8 @@ public class QwubbleDialogFragment extends DialogFragment {
                 });
             }
         });
+        loadQwubbleAnswers();
+        loadQwubbleImage();
 
         return view;
     }
