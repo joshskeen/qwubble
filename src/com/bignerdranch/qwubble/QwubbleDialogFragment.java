@@ -80,7 +80,7 @@ public class QwubbleDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         mIQwubble = (IQwubble) getArguments().getSerializable(QWUBBLE_DATA);
 
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_NoActionBar_Fullscreen);
     }
 
     @Override
