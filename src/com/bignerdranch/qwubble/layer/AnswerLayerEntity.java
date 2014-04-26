@@ -137,6 +137,11 @@ public class AnswerLayerEntity extends LayerEntity {
                 Body circleBody = PhysicsFactory.createCircleBody(mPhysicsWorld, entity, BodyDef.BodyType.DynamicBody, FIXTURE_DEF);
 
                 attachChild(entity);
+
+                if (activeLayer == AnswerLayerEntity.this) {
+                    mScene.registerTouchArea(entity);
+                }
+
                 mHighlighter.addHighlight(entity);
                 mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(entity, circleBody, true, true));
                 mChildQwubbles.add(entity);
