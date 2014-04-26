@@ -12,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.bignerdranch.qwubble.data.AnswerData;
 import com.bignerdranch.qwubble.data.GCMQuestionResponse;
 import com.bignerdranch.qwubble.data.QuestionData;
-import com.bignerdranch.qwubble.data.QwubbleData;
 import com.bignerdranch.qwubble.event.ShowQwubbleEvent;
 import com.bignerdranch.qwubble.event.ZoomOutEvent;
 import com.bignerdranch.qwubble.layer.AnswerLayerEntity;
@@ -399,9 +398,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IAcceleratio
             regid = getRegistrationId(context);
             Log.d(TAG, "REGID was " + regid);
             if (regid.isEmpty()) {
-                Log.d(TAG, "REGID was empty");
+                registerInBackground();
             }
-            registerInBackground();
         } else {
             Log.d(TAG, "SETUP PLAY SERVICES FAILED!!!!!!");
         }
